@@ -73,7 +73,7 @@
     output="screen">
     <env
       name="PYTHONPATH"
-      value="/home/w/clb_ws/python_vendor:$(optenv PYTHONPATH)" />
+      value="$(find r1)/../../python_vendor:$(optenv PYTHONPATH)" />
   </node>
 
   <node
@@ -125,6 +125,6 @@
     output="screen">
     <env
       name="PYTHONPATH"
-      value="/home/w/clb_ws/python_vendor:$(optenv PYTHONPATH)" />
+      value="$(find r1)/../../python_vendor:$(optenv PYTHONPATH)" />
   </node>
 </launch>

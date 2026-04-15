@@ -27,6 +27,8 @@ catkin_install_python(PROGRAMS
 )
 
 foreach(dir config launch maps meshes rviz textures urdf worlds)
-  install(DIRECTORY ${dir}/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+  if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${dir})
+    install(DIRECTORY ${dir}/
+      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
+  endif()
 endforeach(dir)

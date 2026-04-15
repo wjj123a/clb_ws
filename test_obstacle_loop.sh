@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cd "$(dirname "$0")"
+WS_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+cd "$WS_DIR"
 source /opt/ros/noetic/setup.bash
-source /home/w/clb_ws/devel/setup.bash
-export PATH="/home/w/clb_ws/devel/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-R1_PYYAML_SITE_PACKAGES=/home/w/clb_ws/python_vendor
+source "$WS_DIR/devel/setup.bash"
+export PATH="$WS_DIR/devel/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+R1_PYYAML_SITE_PACKAGES="$WS_DIR/python_vendor"
 if [ -d "$R1_PYYAML_SITE_PACKAGES/yaml" ]; then
   export PYTHONPATH="$R1_PYYAML_SITE_PACKAGES${PYTHONPATH:+:$PYTHONPATH}"
 fi

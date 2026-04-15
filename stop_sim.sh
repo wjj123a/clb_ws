@@ -61,10 +61,10 @@ pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/gzserver' >/dev/null 2>&1
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/gzclient' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/rviz/rviz' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/robot_state_publisher/robot_state_publisher' >/dev/null 2>&1 || true
-pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/cmd_vel_limiter.py' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f "$WS_DIR/devel/lib/r1/cmd_vel_limiter.py" >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/spawn_model' >/dev/null 2>&1 || true
-pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/odom_sanitizer.py' >/dev/null 2>&1 || true
-pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/static_joint_state_publisher.py' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f "$WS_DIR/devel/lib/r1/odom_sanitizer.py" >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f "$WS_DIR/devel/lib/r1/static_joint_state_publisher.py" >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/move_base/move_base' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/map_server/map_server' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/amcl/amcl' >/dev/null 2>&1 || true
