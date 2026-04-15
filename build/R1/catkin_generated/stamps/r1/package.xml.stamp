@@ -34,6 +34,7 @@ for R1 robot</p>
   <depend>sensor_msgs</depend>
   <depend>std_srvs</depend>
   <depend>tf</depend>
+  <exec_depend>gazebo_msgs</exec_depend>
 
   <export>
     <architecture_independent />

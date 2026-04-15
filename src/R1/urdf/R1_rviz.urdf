@@ -13,21 +13,21 @@
   <link name="base_footprint" />
 
   <joint name="base_footprint_joint" type="fixed">
-    <origin xyz="0 0 0.04075" rpy="0 0 3.14159265359" />
+    <origin xyz="0 0 0.04075" rpy="0 0 0" />
     <parent link="base_footprint" />
     <child link="base_link" />
   </joint>
 
   <link name="base_link">
     <visual>
-      <origin xyz="-0.02 0 0.17" rpy="0 0 0" />
+      <origin xyz="0.02 0 0.17" rpy="0 0 0" />
       <geometry>
         <box size="0.56 0.29 0.24" />
       </geometry>
       <material name="frame_white" />
     </visual>
     <visual>
-      <origin xyz="-0.02 0 0.34" rpy="0 0 0" />
+      <origin xyz="0.02 0 0.34" rpy="0 0 0" />
       <geometry>
         <box size="0.48 0.25 0.10" />
       </geometry>
@@ -46,10 +46,10 @@
   </link>
 
   <joint name="J1" type="continuous">
-    <origin xyz="-0.220127909860013 -0.142085316479216 0.0" rpy="0 0 0" />
+    <origin xyz="0.220127909860013 0.142085316479216 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link1" />
-    <axis xyz="0 -1 0" />
+    <axis xyz="0 1 0" />
   </joint>
 
   <link name="Empty_Link2">
@@ -63,10 +63,10 @@
   </link>
 
   <joint name="J2" type="continuous">
-    <origin xyz="-0.220127909860013 0.122535316479216 0.0" rpy="0 0 0" />
+    <origin xyz="0.220127909860013 -0.122535316479216 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link2" />
-    <axis xyz="0 1 0" />
+    <axis xyz="0 -1 0" />
   </joint>
 
   <link name="Empty_Link3">
@@ -80,10 +80,10 @@
   </link>
 
   <joint name="J3" type="continuous">
-    <origin xyz="0.19879978611665 0.122535316479219 0.0" rpy="0 0 0" />
+    <origin xyz="-0.19879978611665 -0.122535316479219 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link3" />
-    <axis xyz="0 1 0" />
+    <axis xyz="0 -1 0" />
   </joint>
 
   <link name="Empty_Link4">
@@ -97,10 +97,10 @@
   </link>
 
   <joint name="J4" type="continuous">
-    <origin xyz="0.19879978611665 -0.119285316479219 0.0" rpy="0 0 0" />
+    <origin xyz="-0.19879978611665 0.119285316479219 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link4" />
-    <axis xyz="0 -1 0" />
+    <axis xyz="0 1 0" />
   </joint>
 
   <link name="imu_link">
@@ -114,7 +114,7 @@
   </link>
 
   <joint name="imu_joint" type="fixed">
-    <origin xyz="-0.02 0 0.22" rpy="0 0 0" />
+    <origin xyz="0.02 0 0.22" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="imu_link" />
   </joint>
@@ -130,7 +130,7 @@
   </link>
 
   <joint name="laser_joint" type="fixed">
-    <origin xyz="-0.34 0 0.36" rpy="0 0 3.14159265359" />
+    <origin xyz="0.34 0 0.36" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="laser_link" />
   </joint>
@@ -146,7 +146,7 @@
   </link>
 
   <joint name="camera_joint" type="fixed">
-    <origin xyz="-0.30 0 0.28" rpy="0 0 3.14159265359" />
+    <origin xyz="0.30 0 0.28" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="camera_link" />
   </joint>

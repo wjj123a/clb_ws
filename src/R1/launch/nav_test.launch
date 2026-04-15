@@ -1,7 +1,22 @@
 <launch>
   <arg
+    name="base_local_planner_config"
+    default="$(find r1)/config/base_local_planner.yaml" />
+  <arg
+    name="costmap_common_config"
+    default="$(find r1)/config/costmap_common.yaml" />
+  <arg
+    name="global_costmap_config"
+    default="$(find r1)/config/global_costmap.yaml" />
+  <arg
+    name="local_costmap_config"
+    default="$(find r1)/config/local_costmap.yaml" />
+  <arg
     name="world_name"
     default="$(find r1)/worlds/charging_arena.world" />
+  <arg
+    name="map_file"
+    default="$(find r1)/maps/charging_arena.yaml" />
   <arg
     name="gui"
     default="true" />
@@ -24,6 +39,18 @@
   <include
     file="$(find r1)/launch/sim_bringup.launch">
     <arg
+      name="base_local_planner_config"
+      value="$(arg base_local_planner_config)" />
+    <arg
+      name="costmap_common_config"
+      value="$(arg costmap_common_config)" />
+    <arg
+      name="global_costmap_config"
+      value="$(arg global_costmap_config)" />
+    <arg
+      name="local_costmap_config"
+      value="$(arg local_costmap_config)" />
+    <arg
       name="gui"
       value="$(arg gui)" />
     <arg
@@ -32,6 +59,9 @@
     <arg
       name="world_name"
       value="$(arg world_name)" />
+    <arg
+      name="map_file"
+      value="$(arg map_file)" />
     <arg
       name="rviz_config"
       value="$(find r1)/rviz/navigation.rviz" />

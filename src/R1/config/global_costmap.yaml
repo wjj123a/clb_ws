@@ -8,3 +8,7 @@ transform_tolerance: 0.5
 plugins:
   - {name: static_layer, type: "costmap_2d::StaticLayer"}
   - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+inflation_layer:
+  inflation_radius: 0.28
+  cost_scaling_factor: 3.0

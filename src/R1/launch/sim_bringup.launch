@@ -3,6 +3,21 @@
     name="world_name"
     default="$(find r1)/worlds/charging_arena.world" />
   <arg
+    name="base_local_planner_config"
+    default="$(find r1)/config/base_local_planner.yaml" />
+  <arg
+    name="costmap_common_config"
+    default="$(find r1)/config/costmap_common.yaml" />
+  <arg
+    name="global_costmap_config"
+    default="$(find r1)/config/global_costmap.yaml" />
+  <arg
+    name="local_costmap_config"
+    default="$(find r1)/config/local_costmap.yaml" />
+  <arg
+    name="map_file"
+    default="$(find r1)/maps/charging_arena.yaml" />
+  <arg
     name="rviz"
     default="true" />
   <arg
@@ -13,6 +28,9 @@
     default="$(find r1)/rviz/sim.rviz" />
   <arg
     name="enable_navigation"
+    default="false" />
+  <arg
+    name="enable_planar_test_guard"
     default="false" />
   <arg
     name="navigation_use_amcl"
@@ -65,6 +83,21 @@
     if="$(arg run_navigation)"
     file="$(find r1)/launch/navigation.launch">
     <arg
+      name="base_local_planner_config"
+      value="$(arg base_local_planner_config)" />
+    <arg
+      name="costmap_common_config"
+      value="$(arg costmap_common_config)" />
+    <arg
+      name="global_costmap_config"
+      value="$(arg global_costmap_config)" />
+    <arg
+      name="local_costmap_config"
+      value="$(arg local_costmap_config)" />
+    <arg
+      name="map_file"
+      value="$(arg map_file)" />
+    <arg
       name="use_amcl"
       value="$(arg navigation_use_amcl)" />
     <arg
@@ -90,6 +123,32 @@
   <include
     if="$(arg enable_docking)"
     file="$(find r1)/launch/docking.launch" />
+
+  <node
+    if="$(arg enable_planar_test_guard)"
+    name="planar_pose_guard"
+    pkg="r1"
+    type="planar_pose_guard.py"
+    output="screen">
+    <env
+      name="PYTHONPATH"
+      value="/home/w/clb_ws/python_vendor:$(optenv PYTHONPATH)" />
+    <param
+      name="model_name"
+      value="R1" />
+    <param
+      name="roll_threshold"
+      value="0.06" />
+    <param
+      name="pitch_threshold"
+      value="0.06" />
+    <param
+      name="z_threshold"
+      value="0.025" />
+    <param
+      name="min_correction_interval"
+      value="0.03" />
+  </node>
 
   <param
     name="robot_description_rviz"

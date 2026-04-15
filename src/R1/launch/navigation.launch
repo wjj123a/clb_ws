@@ -1,5 +1,17 @@
 <launch>
   <arg
+    name="base_local_planner_config"
+    default="$(find r1)/config/base_local_planner.yaml" />
+  <arg
+    name="costmap_common_config"
+    default="$(find r1)/config/costmap_common.yaml" />
+  <arg
+    name="global_costmap_config"
+    default="$(find r1)/config/global_costmap.yaml" />
+  <arg
+    name="local_costmap_config"
+    default="$(find r1)/config/local_costmap.yaml" />
+  <arg
     name="map_file"
     default="$(find r1)/maps/charging_arena.yaml" />
   <arg
@@ -87,25 +99,25 @@
     output="screen">
     <rosparam
       command="load"
-      file="$(find r1)/config/base_local_planner.yaml" />
+      file="$(arg base_local_planner_config)" />
     <rosparam
       command="load"
       file="$(find r1)/config/global_planner.yaml" />
     <rosparam
       command="load"
-      file="$(find r1)/config/costmap_common.yaml"
+      file="$(arg costmap_common_config)"
       ns="global_costmap" />
     <rosparam
       command="load"
-      file="$(find r1)/config/global_costmap.yaml"
+      file="$(arg global_costmap_config)"
       ns="global_costmap" />
     <rosparam
       command="load"
-      file="$(find r1)/config/costmap_common.yaml"
+      file="$(arg costmap_common_config)"
       ns="local_costmap" />
     <rosparam
       command="load"
-      file="$(find r1)/config/local_costmap.yaml"
+      file="$(arg local_costmap_config)"
       ns="local_costmap" />
     <param
       name="DWAPlannerROS/odom_topic"

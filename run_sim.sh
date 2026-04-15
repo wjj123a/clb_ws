@@ -21,6 +21,10 @@ fi
 unset PYTHONHOME PYTHONPATH CONDA_PREFIX CONDA_DEFAULT_ENV CONDA_SHLVL
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 export LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu
+R1_PYYAML_SITE_PACKAGES="$WS_DIR/python_vendor"
+if [ -d "$R1_PYYAML_SITE_PACKAGES/yaml" ]; then
+  export PYTHONPATH="$R1_PYYAML_SITE_PACKAGES"
+fi
 export DISABLE_ROS1_EOL_WARNINGS=1
 export DISPLAY="${DISPLAY:-:0}"
 export WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}"
@@ -41,6 +45,7 @@ else
 fi
 set -u
 
+export PATH="$WS_DIR/devel/bin:/opt/ros/noetic/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 export LD_LIBRARY_PATH="/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:${LD_LIBRARY_PATH:-}"
 export ROS_HOME="${ROS_HOME:-$HOME/.ros}"
 

@@ -52,7 +52,11 @@
     name="joint_state_publisher"
     pkg="r1"
     type="static_joint_state_publisher.py"
-    output="screen" />
+    output="screen">
+    <env
+      name="PYTHONPATH"
+      value="/home/w/clb_ws/python_vendor:$(optenv PYTHONPATH)" />
+  </node>
 
   <node
     name="robot_state_publisher"
@@ -69,5 +73,9 @@
     pkg="gazebo_ros"
     type="spawn_model"
     args="-urdf -param robot_description -model R1 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"
-    output="screen" />
+    output="screen">
+    <env
+      name="PYTHONPATH"
+      value="/home/w/clb_ws/python_vendor:$(optenv PYTHONPATH)" />
+  </node>
 </launch>
