@@ -6,10 +6,19 @@
     name="rviz"
     default="true" />
   <arg
+    name="gui"
+    default="true" />
+  <arg
     name="rviz_config"
     default="$(find r1)/rviz/sim.rviz" />
   <arg
     name="enable_navigation"
+    default="false" />
+  <arg
+    name="navigation_use_amcl"
+    default="false" />
+  <arg
+    name="navigation_use_odom_sanitizer"
     default="false" />
   <arg
     name="enable_docking"
@@ -33,6 +42,9 @@
   <include
     file="$(find r1)/launch/gazebo.launch">
     <arg
+      name="gui"
+      value="$(arg gui)" />
+    <arg
       name="world_name"
       value="$(arg world_name)" />
     <arg
@@ -53,6 +65,18 @@
     if="$(arg run_navigation)"
     file="$(find r1)/launch/navigation.launch">
     <arg
+      name="use_amcl"
+      value="$(arg navigation_use_amcl)" />
+    <arg
+      name="use_odom_sanitizer"
+      value="$(arg navigation_use_odom_sanitizer)" />
+    <arg
+      name="odom_input_topic"
+      value="ground_truth_odom" />
+    <arg
+      name="odom_topic"
+      value="$(eval 'ground_truth_odom_sanitized' if arg('navigation_use_odom_sanitizer') else 'odom')" />
+    <arg
       name="initial_pose_x"
       value="$(arg x)" />
     <arg
@@ -67,6 +91,10 @@
     if="$(arg enable_docking)"
     file="$(find r1)/launch/docking.launch" />
 
+  <param
+    name="robot_description_rviz"
+    textfile="$(find r1)/urdf/R1_rviz.urdf" />
+
   <node
     if="$(arg rviz)"
     name="rviz"
@@ -74,6 +102,27 @@
     type="rviz"
     args="-d $(arg rviz_config)"
     output="screen">
+    <env
+      name="DISPLAY"
+      value="$(optenv DISPLAY :0)" />
+    <env
+      name="WAYLAND_DISPLAY"
+      value="$(optenv WAYLAND_DISPLAY wayland-0)" />
+    <env
+      name="XDG_RUNTIME_DIR"
+      value="$(optenv XDG_RUNTIME_DIR /mnt/wslg/runtime-dir)" />
+    <env
+      name="QT_QPA_PLATFORM"
+      value="$(optenv QT_QPA_PLATFORM xcb)" />
+    <env
+      name="QT_X11_NO_MITSHM"
+      value="$(optenv QT_X11_NO_MITSHM 1)" />
+    <env
+      name="LIBGL_DRIVERS_PATH"
+      value="/usr/lib/x86_64-linux-gnu/dri" />
+    <env
+      name="LD_LIBRARY_PATH"
+      value="/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/opt/ros/noetic/lib" />
     <env
       name="DISABLE_ROS1_EOL_WARNINGS"
       value="1" />

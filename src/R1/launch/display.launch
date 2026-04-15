@@ -6,10 +6,14 @@
   <param
     name="robot_description"
     textfile="$(find r1)/urdf/R1.urdf" />
+  <param
+    name="robot_description_rviz"
+    textfile="$(find r1)/urdf/R1_rviz.urdf" />
   <node
-    name="joint_state_publisher_gui"
-    pkg="joint_state_publisher_gui"
-    type="joint_state_publisher_gui" />
+    name="joint_state_publisher"
+    pkg="r1"
+    type="static_joint_state_publisher.py"
+    output="screen" />
   <node
     name="robot_state_publisher"
     pkg="robot_state_publisher"
@@ -19,6 +23,27 @@
     pkg="rviz"
     type="rviz"
     args="-d $(arg rviz_config)">
+    <env
+      name="DISPLAY"
+      value="$(optenv DISPLAY :0)" />
+    <env
+      name="WAYLAND_DISPLAY"
+      value="$(optenv WAYLAND_DISPLAY wayland-0)" />
+    <env
+      name="XDG_RUNTIME_DIR"
+      value="$(optenv XDG_RUNTIME_DIR /mnt/wslg/runtime-dir)" />
+    <env
+      name="QT_QPA_PLATFORM"
+      value="$(optenv QT_QPA_PLATFORM xcb)" />
+    <env
+      name="QT_X11_NO_MITSHM"
+      value="$(optenv QT_X11_NO_MITSHM 1)" />
+    <env
+      name="LIBGL_DRIVERS_PATH"
+      value="/usr/lib/x86_64-linux-gnu/dri" />
+    <env
+      name="LD_LIBRARY_PATH"
+      value="/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/opt/ros/noetic/lib" />
     <env
       name="DISABLE_ROS1_EOL_WARNINGS"
       value="1" />

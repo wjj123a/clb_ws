@@ -3,6 +3,18 @@
     name="map_file"
     default="$(find r1)/maps/charging_arena.yaml" />
   <arg
+    name="use_amcl"
+    default="true" />
+  <arg
+    name="use_odom_sanitizer"
+    default="false" />
+  <arg
+    name="odom_input_topic"
+    default="ground_truth_odom" />
+  <arg
+    name="odom_topic"
+    default="odom" />
+  <arg
     name="initial_pose_x"
     default="0.0" />
   <arg
@@ -20,6 +32,34 @@
     output="screen" />
 
   <node
+    unless="$(arg use_amcl)"
+    name="map_to_odom"
+    pkg="tf2_ros"
+    type="static_transform_publisher"
+    args="0 0 0 0 0 0 map odom" />
+
+  <node
+    if="$(arg use_odom_sanitizer)"
+    name="odom_sanitizer"
+    pkg="r1"
+    type="odom_sanitizer.py"
+    output="screen">
+    <param
+      name="input_topic"
+      value="$(arg odom_input_topic)" />
+    <param
+      name="output_topic"
+      value="$(arg odom_topic)" />
+    <param
+      name="publish_tf"
+      value="true" />
+    <param
+      name="output_frame_id"
+      value="odom" />
+  </node>
+
+  <node
+    if="$(arg use_amcl)"
     name="amcl"
     pkg="amcl"
     type="amcl"
@@ -67,5 +107,11 @@
       command="load"
       file="$(find r1)/config/local_costmap.yaml"
       ns="local_costmap" />
+    <param
+      name="DWAPlannerROS/odom_topic"
+      value="$(arg odom_topic)" />
+    <param
+      name="TrajectoryPlannerROS/odom_topic"
+      value="$(arg odom_topic)" />
   </node>
 </launch>

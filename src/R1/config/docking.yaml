@@ -1,5 +1,5 @@
 map_frame: map
-base_frame: base_footprint
+base_frame: base_link
 move_base_action: move_base
 move_base_wait_timeout: 3.0
 pose_timeout: 5.0
