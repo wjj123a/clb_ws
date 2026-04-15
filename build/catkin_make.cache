@@ -1,2 +1,0 @@
-R1
--DCATKIN_DEVEL_PREFIX=/home/w/clb_ws/devel -DCMAKE_INSTALL_PREFIX=/home/w/clb_ws/install -G Unix Makefiles

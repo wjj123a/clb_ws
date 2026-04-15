@@ -3,6 +3,7 @@
 /devel/
 /install/
 /logs/
+
 /.catkin_tools/
 /.catkin_workspace
 
@@ -38,3 +39,7 @@ Thumbs.db
 # User-exported ad hoc maps
 src/R1/maps/my_map*.pgm
 src/R1/maps/my_map*.yaml
+
+# Test and coverage outputs
+.coverage
+coverage.xml
