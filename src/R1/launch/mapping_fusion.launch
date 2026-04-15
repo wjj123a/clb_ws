@@ -1,0 +1,113 @@
+<launch>
+  <arg
+    name="rgb_image_topic"
+    default="/front_camera/rgb/image_raw" />
+  <arg
+    name="depth_image_topic"
+    default="/front_camera/depth/image_raw" />
+  <arg
+    name="camera_info_topic"
+    default="/front_camera/rgb/camera_info" />
+  <arg
+    name="scan_topic"
+    default="/scan" />
+  <arg
+    name="odom_topic"
+    default="/odom" />
+  <arg
+    name="imu_topic"
+    default="/imu/data" />
+  <arg
+    name="filtered_odom_topic"
+    default="/odometry/filtered" />
+  <arg
+    name="rgbd_topic"
+    default="/front_camera/rgbd_image" />
+  <arg
+    name="database_path"
+    default="$(env HOME)/.ros/rtabmap_r1.db" />
+  <arg
+    name="delete_db_on_start"
+    default="true" />
+  <arg
+    name="base_frame"
+    default="base_footprint" />
+
+  <node
+    name="ekf_mapping"
+    pkg="robot_localization"
+    type="ekf_localization_node"
+    clear_params="true"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find r1)/config/ekf_mapping.yaml" />
+    <remap
+      from="odometry/filtered"
+      to="$(arg filtered_odom_topic)" />
+    <remap
+      from="odom"
+      to="$(arg odom_topic)" />
+    <remap
+      from="imu/data"
+      to="$(arg imu_topic)" />
+  </node>
+
+  <node
+    name="rgbd_sync"
+    pkg="rtabmap_sync"
+    type="rgbd_sync"
+    output="screen">
+    <param
+      name="approx_sync"
+      value="true" />
+    <param
+      name="topic_queue_size"
+      value="1" />
+    <param
+      name="sync_queue_size"
+      value="30" />
+    <remap
+      from="rgb/image"
+      to="$(arg rgb_image_topic)" />
+    <remap
+      from="depth/image"
+      to="$(arg depth_image_topic)" />
+    <remap
+      from="rgb/camera_info"
+      to="$(arg camera_info_topic)" />
+    <remap
+      from="rgbd_image"
+      to="$(arg rgbd_topic)" />
+  </node>
+
+  <node
+    name="rtabmap"
+    pkg="rtabmap_slam"
+    type="rtabmap"
+    args="$(eval '--delete_db_on_start' if arg('delete_db_on_start') == 'true' else '')"
+    clear_params="true"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find r1)/config/rtabmap_mapping.yaml" />
+    <param
+      name="database_path"
+      value="$(arg database_path)" />
+    <param
+      name="frame_id"
+      value="$(arg base_frame)" />
+    <remap
+      from="rgbd_image"
+      to="$(arg rgbd_topic)" />
+    <remap
+      from="scan"
+      to="$(arg scan_topic)" />
+    <remap
+      from="odom"
+      to="$(arg filtered_odom_topic)" />
+    <remap
+      from="grid_map"
+      to="/map" />
+  </node>
+</launch>

@@ -1,0 +1,23 @@
+subscribe_depth: false
+subscribe_rgb: false
+subscribe_rgbd: true
+subscribe_scan: true
+subscribe_scan_cloud: false
+subscribe_odom_info: false
+approx_sync: true
+sync_queue_size: 30
+publish_tf: true
+wait_for_transform_duration: 0.2
+
+Reg/Force3DoF: true
+RGBD/CreateOccupancyGrid: true
+RGBD/LinearUpdate: 0.05
+RGBD/AngularUpdate: 0.05
+Grid/3D: false
+Grid/Sensor: true
+Grid/RangeMin: 0.2
+Grid/RangeMax: 8.0
+Grid/CellSize: 0.05
+Grid/MaxGroundHeight: 0.05
+Grid/NormalsSegmentation: false
+Mem/NotLinkedNodesKept: false

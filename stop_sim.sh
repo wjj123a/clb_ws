@@ -49,7 +49,7 @@ if rosservice type /gazebo/delete_model >/dev/null 2>&1; then
 fi
 
 if rosnode list >/dev/null 2>&1; then
-  mapfile -t nodes < <(rosnode list 2>/dev/null | grep -E '^/(gazebo|gazebo_gui|robot_state_publisher|spawn_model|map_server|move_base|amcl|odom_sanitizer|joint_state_publisher|static_joint_state_publisher|rviz)')
+  mapfile -t nodes < <(rosnode list 2>/dev/null | grep -E '^/(gazebo|gazebo_gui|robot_state_publisher|spawn_model|map_server|move_base|amcl|odom_sanitizer|joint_state_publisher|static_joint_state_publisher|rviz|slam_gmapping|ekf_mapping|rgbd_sync|rtabmap|cmd_vel_limiter)')
   if [ "${#nodes[@]}" -gt 0 ]; then
     say "Stopping stale ROS nodes..."
     rosnode kill "${nodes[@]}" >/dev/null 2>&1 || true
@@ -61,12 +61,17 @@ pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/gzserver' >/dev/null 2>&1
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/gzclient' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/rviz/rviz' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/robot_state_publisher/robot_state_publisher' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/cmd_vel_limiter.py' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/gazebo_ros/spawn_model' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/odom_sanitizer.py' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/home/w/clb_ws/devel/lib/r1/static_joint_state_publisher.py' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/move_base/move_base' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/map_server/map_server' >/dev/null 2>&1 || true
 pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/amcl/amcl' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/slam_gmapping/slam_gmapping' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/robot_localization/ekf_localization_node' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/rtabmap_sync/rgbd_sync' >/dev/null 2>&1 || true
+pkill -u "$(id -u)" -f '/opt/ros/noetic/lib/rtabmap_slam/rtabmap' >/dev/null 2>&1 || true
 
 sleep 2
 say "Cleanup complete."

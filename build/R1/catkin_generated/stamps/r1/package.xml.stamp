@@ -27,13 +27,17 @@ for R1 robot</p>
   <depend>move_base_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>navfn</depend>
+  <depend>robot_localization</depend>
   <depend>robot_state_publisher</depend>
   <depend>roslaunch</depend>
   <depend>rospy</depend>
   <depend>rviz</depend>
   <depend>sensor_msgs</depend>
+  <depend>gmapping</depend>
   <depend>std_srvs</depend>
   <depend>tf</depend>
+  <depend>rtabmap_slam</depend>
+  <depend>rtabmap_sync</depend>
   <exec_depend>gazebo_msgs</exec_depend>
 
   <export>
