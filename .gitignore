@@ -1,0 +1,40 @@
+# ROS / Catkin build outputs
+/build/
+/devel/
+/install/
+/logs/
+/.catkin_tools/
+/.catkin_workspace
+
+# ROS runtime artifacts
+/.ros/
+
+# Python cache / tooling
+__pycache__/
+*.py[cod]
+*$py.class
+.mypy_cache/
+.pytest_cache/
+
+# Virtualenv / local Python environments
+.venv/
+venv/
+env/
+
+# Editor / OS noise
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Local test outputs and temporary files
+*.log
+*.tmp
+*.temp
+
+# User-exported ad hoc maps
+src/R1/maps/my_map*.pgm
+src/R1/maps/my_map*.yaml

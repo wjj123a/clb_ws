@@ -56,6 +56,24 @@
   <arg
     name="yaw"
     default="0.0" />
+  <arg
+    name="cmd_vel_max_linear_x"
+    default="0.15" />
+  <arg
+    name="cmd_vel_max_linear_y"
+    default="0.0" />
+  <arg
+    name="cmd_vel_max_angular_z"
+    default="0.35" />
+  <arg
+    name="cmd_vel_max_linear_accel"
+    default="0.25" />
+  <arg
+    name="cmd_vel_max_angular_accel"
+    default="0.60" />
+  <arg
+    name="cmd_vel_timeout"
+    default="0.40" />
 
   <include
     file="$(find r1)/launch/gazebo.launch">
@@ -77,6 +95,24 @@
     <arg
       name="yaw"
       value="$(arg yaw)" />
+    <arg
+      name="cmd_vel_max_linear_x"
+      value="$(arg cmd_vel_max_linear_x)" />
+    <arg
+      name="cmd_vel_max_linear_y"
+      value="$(arg cmd_vel_max_linear_y)" />
+    <arg
+      name="cmd_vel_max_angular_z"
+      value="$(arg cmd_vel_max_angular_z)" />
+    <arg
+      name="cmd_vel_max_linear_accel"
+      value="$(arg cmd_vel_max_linear_accel)" />
+    <arg
+      name="cmd_vel_max_angular_accel"
+      value="$(arg cmd_vel_max_angular_accel)" />
+    <arg
+      name="cmd_vel_timeout"
+      value="$(arg cmd_vel_timeout)" />
   </include>
 
   <include

@@ -18,6 +18,7 @@ catkin_package()
 find_package(roslaunch)
 
 catkin_install_python(PROGRAMS
+  scripts/cmd_vel_limiter.py
   scripts/docking_controller.py
   scripts/odom_sanitizer.py
   scripts/planar_pose_guard.py
