@@ -1,0 +1,67 @@
+<launch>
+  <arg
+    name="world_name"
+    default="$(find r1)/worlds/charging_arena.world" />
+  <arg
+    name="gui"
+    default="true" />
+  <arg
+    name="paused"
+    default="false" />
+  <arg
+    name="use_sim_time"
+    default="true" />
+  <arg
+    name="x"
+    default="0.0" />
+  <arg
+    name="y"
+    default="0.0" />
+  <arg
+    name="z"
+    default="0.001" />
+  <arg
+    name="yaw"
+    default="0.0" />
+
+  <param
+    name="use_sim_time"
+    value="$(arg use_sim_time)" />
+
+  <include
+    file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg
+      name="world_name"
+      value="$(arg world_name)" />
+    <arg
+      name="gui"
+      value="$(arg gui)" />
+    <arg
+      name="paused"
+      value="$(arg paused)" />
+    <arg
+      name="use_sim_time"
+      value="$(arg use_sim_time)" />
+  </include>
+
+  <param
+    name="robot_description"
+    textfile="$(find r1)/urdf/R1.urdf" />
+
+  <node
+    name="robot_state_publisher"
+    pkg="robot_state_publisher"
+    type="robot_state_publisher"
+    output="screen">
+    <param
+      name="publish_frequency"
+      value="30.0" />
+  </node>
+
+  <node
+    name="spawn_model"
+    pkg="gazebo_ros"
+    type="spawn_model"
+    args="-urdf -param robot_description -model R1 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"
+    output="screen" />
+</launch>

@@ -1,0 +1,71 @@
+<launch>
+  <arg
+    name="map_file"
+    default="$(find r1)/maps/charging_arena.yaml" />
+  <arg
+    name="initial_pose_x"
+    default="0.0" />
+  <arg
+    name="initial_pose_y"
+    default="0.0" />
+  <arg
+    name="initial_pose_a"
+    default="0.0" />
+
+  <node
+    name="map_server"
+    pkg="map_server"
+    type="map_server"
+    args="$(arg map_file)"
+    output="screen" />
+
+  <node
+    name="amcl"
+    pkg="amcl"
+    type="amcl"
+    clear_params="true"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find r1)/config/amcl.yaml" />
+    <param
+      name="initial_pose_x"
+      value="$(arg initial_pose_x)" />
+    <param
+      name="initial_pose_y"
+      value="$(arg initial_pose_y)" />
+    <param
+      name="initial_pose_a"
+      value="$(arg initial_pose_a)" />
+  </node>
+
+  <node
+    name="move_base"
+    pkg="move_base"
+    type="move_base"
+    clear_params="true"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find r1)/config/base_local_planner.yaml" />
+    <rosparam
+      command="load"
+      file="$(find r1)/config/global_planner.yaml" />
+    <rosparam
+      command="load"
+      file="$(find r1)/config/costmap_common.yaml"
+      ns="global_costmap" />
+    <rosparam
+      command="load"
+      file="$(find r1)/config/global_costmap.yaml"
+      ns="global_costmap" />
+    <rosparam
+      command="load"
+      file="$(find r1)/config/costmap_common.yaml"
+      ns="local_costmap" />
+    <rosparam
+      command="load"
+      file="$(find r1)/config/local_costmap.yaml"
+      ns="local_costmap" />
+  </node>
+</launch>

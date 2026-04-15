@@ -1,0 +1,81 @@
+<launch>
+  <arg
+    name="world_name"
+    default="$(find r1)/worlds/charging_arena.world" />
+  <arg
+    name="rviz"
+    default="true" />
+  <arg
+    name="rviz_config"
+    default="$(find r1)/rviz/sim.rviz" />
+  <arg
+    name="enable_navigation"
+    default="false" />
+  <arg
+    name="enable_docking"
+    default="false" />
+  <arg
+    name="run_navigation"
+    default="$(eval arg('enable_navigation') or arg('enable_docking'))" />
+  <arg
+    name="x"
+    default="0.0" />
+  <arg
+    name="y"
+    default="0.0" />
+  <arg
+    name="z"
+    default="0.001" />
+  <arg
+    name="yaw"
+    default="0.0" />
+
+  <include
+    file="$(find r1)/launch/gazebo.launch">
+    <arg
+      name="world_name"
+      value="$(arg world_name)" />
+    <arg
+      name="x"
+      value="$(arg x)" />
+    <arg
+      name="y"
+      value="$(arg y)" />
+    <arg
+      name="z"
+      value="$(arg z)" />
+    <arg
+      name="yaw"
+      value="$(arg yaw)" />
+  </include>
+
+  <include
+    if="$(arg run_navigation)"
+    file="$(find r1)/launch/navigation.launch">
+    <arg
+      name="initial_pose_x"
+      value="$(arg x)" />
+    <arg
+      name="initial_pose_y"
+      value="$(arg y)" />
+    <arg
+      name="initial_pose_a"
+      value="$(arg yaw)" />
+  </include>
+
+  <include
+    if="$(arg enable_docking)"
+    file="$(find r1)/launch/docking.launch" />
+
+  <node
+    if="$(arg rviz)"
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-d $(arg rviz_config)"
+    output="screen">
+    <env
+      name="DISABLE_ROS1_EOL_WARNINGS"
+      value="1" />
+  </node>
+</launch>

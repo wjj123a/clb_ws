@@ -1,0 +1,8 @@
+prefix=/home/w/clb_ws/install
+
+Name: r1
+Description: Description of r1
+Version: 1.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,30 @@
+<launch>
+  <arg
+    name="dock_x"
+    default="2.8" />
+  <arg
+    name="dock_y"
+    default="0.0" />
+  <arg
+    name="dock_yaw"
+    default="3.14159" />
+
+  <node
+    name="docking_controller"
+    pkg="r1"
+    type="docking_controller.py"
+    output="screen">
+    <rosparam
+      command="load"
+      file="$(find r1)/config/docking.yaml" />
+    <param
+      name="dock_x"
+      value="$(arg dock_x)" />
+    <param
+      name="dock_y"
+      value="$(arg dock_y)" />
+    <param
+      name="dock_yaw"
+      value="$(arg dock_yaw)" />
+  </node>
+</launch>

@@ -1,0 +1,48 @@
+<launch>
+  <arg
+    name="world_name"
+    default="$(find r1)/worlds/charging_arena.world" />
+  <arg
+    name="x"
+    default="0.0" />
+  <arg
+    name="y"
+    default="0.0" />
+  <arg
+    name="z"
+    default="0.001" />
+  <arg
+    name="yaw"
+    default="0.0" />
+
+  <include
+    file="$(find r1)/launch/sim_bringup.launch">
+    <arg
+      name="world_name"
+      value="$(arg world_name)" />
+    <arg
+      name="rviz"
+      value="true" />
+    <arg
+      name="rviz_config"
+      value="$(find r1)/rviz/navigation.rviz" />
+    <arg
+      name="enable_navigation"
+      value="true" />
+    <arg
+      name="enable_docking"
+      value="false" />
+    <arg
+      name="x"
+      value="$(arg x)" />
+    <arg
+      name="y"
+      value="$(arg y)" />
+    <arg
+      name="z"
+      value="$(arg z)" />
+    <arg
+      name="yaw"
+      value="$(arg yaw)" />
+  </include>
+</launch>
