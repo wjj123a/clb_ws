@@ -102,6 +102,9 @@
       file="$(arg base_local_planner_config)" />
     <rosparam
       command="load"
+      file="$(find r1)/config/move_base_recovery.yaml" />
+    <rosparam
+      command="load"
       file="$(find r1)/config/global_planner.yaml" />
     <rosparam
       command="load"

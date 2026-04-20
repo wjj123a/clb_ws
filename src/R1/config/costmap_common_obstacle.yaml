@@ -1,10 +1,10 @@
 transform_tolerance: 0.5
 footprint:
-  - [0.26, 0.13]
-  - [0.26, -0.13]
-  - [-0.23, -0.14]
-  - [-0.23, 0.14]
-footprint_padding: 0.0
+  - [0.30, 0.16]
+  - [0.30, -0.16]
+  - [-0.26, -0.16]
+  - [-0.26, 0.16]
+footprint_padding: 0.01
 inflation_radius: 0.10
 cost_scaling_factor: 7.0
 obstacle_layer:

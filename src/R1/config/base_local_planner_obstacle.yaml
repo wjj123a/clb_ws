@@ -9,7 +9,7 @@ oscillation_timeout: 18.0
 oscillation_distance: 0.30
 shutdown_costmaps: false
 recovery_behavior_enabled: true
-clearing_rotation_allowed: false
+clearing_rotation_allowed: true
 
 TrajectoryPlannerROS:
   odom_topic: odom
