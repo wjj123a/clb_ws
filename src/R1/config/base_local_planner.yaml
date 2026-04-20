@@ -15,15 +15,15 @@ TrajectoryPlannerROS:
   odom_topic: odom
   holonomic_robot: false
 
-  max_vel_x: 0.15
-  min_vel_x: -0.03
-  min_in_place_vel_theta: 0.05
+  max_vel_x: 0.22
+  min_vel_x: -0.04
+  min_in_place_vel_theta: 0.08
   escape_vel: -0.08
-  max_vel_theta: 0.45
-  min_vel_theta: -0.45
+  max_vel_theta: 0.50
+  min_vel_theta: -0.50
 
-  acc_lim_x: 0.50
-  acc_lim_theta: 0.75
+  acc_lim_x: 0.65
+  acc_lim_theta: 0.90
 
   xy_goal_tolerance: 0.22
   yaw_goal_tolerance: 0.35

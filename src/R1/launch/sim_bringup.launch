@@ -58,19 +58,19 @@
     default="0.0" />
   <arg
     name="cmd_vel_max_linear_x"
-    default="0.15" />
+    default="0.22" />
   <arg
     name="cmd_vel_max_linear_y"
     default="0.0" />
   <arg
     name="cmd_vel_max_angular_z"
-    default="0.35" />
+    default="0.50" />
   <arg
     name="cmd_vel_max_linear_accel"
-    default="0.25" />
+    default="0.40" />
   <arg
     name="cmd_vel_max_angular_accel"
-    default="0.60" />
+    default="0.80" />
   <arg
     name="cmd_vel_timeout"
     default="0.40" />
