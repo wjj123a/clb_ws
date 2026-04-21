@@ -74,6 +74,9 @@
   <arg
     name="cmd_vel_timeout"
     default="0.40" />
+  <arg
+    name="enable_cmd_vel_limiter"
+    default="false" />
 
   <include
     file="$(find r1)/launch/gazebo.launch">
@@ -113,6 +116,9 @@
     <arg
       name="cmd_vel_timeout"
       value="$(arg cmd_vel_timeout)" />
+    <arg
+      name="enable_cmd_vel_limiter"
+      value="$(arg enable_cmd_vel_limiter)" />
   </include>
 
   <include

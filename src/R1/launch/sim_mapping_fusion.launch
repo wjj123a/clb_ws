@@ -89,6 +89,9 @@
     <arg
       name="cmd_vel_max_angular_accel"
       value="$(arg cmd_vel_max_angular_accel)" />
+    <arg
+      name="enable_cmd_vel_limiter"
+      value="true" />
   </include>
 
   <include

@@ -41,6 +41,9 @@
   <arg
     name="cmd_vel_timeout"
     default="0.40" />
+  <arg
+    name="enable_cmd_vel_limiter"
+    default="false" />
 
   <param
     name="use_sim_time"
@@ -87,6 +90,7 @@
   </node>
 
   <node
+    if="$(arg enable_cmd_vel_limiter)"
     name="cmd_vel_limiter"
     pkg="r1"
     type="cmd_vel_limiter.py"
@@ -116,6 +120,14 @@
       from="cmd_vel_out"
       to="cmd_vel_safe" />
   </node>
+
+  <node
+    unless="$(arg enable_cmd_vel_limiter)"
+    name="cmd_vel_passthrough"
+    pkg="topic_tools"
+    type="relay"
+    args="cmd_vel cmd_vel_safe"
+    output="screen" />
 
   <node
     name="spawn_model"

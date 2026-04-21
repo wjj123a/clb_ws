@@ -83,5 +83,8 @@
     <arg
       name="yaw"
       value="$(arg yaw)" />
+    <arg
+      name="enable_cmd_vel_limiter"
+      value="false" />
   </include>
 </launch>
