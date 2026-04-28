@@ -24,6 +24,15 @@
     name="rviz"
     default="true" />
   <arg
+    name="navigation_use_amcl"
+    default="false" />
+  <arg
+    name="navigation_use_ground_truth_localization"
+    default="true" />
+  <arg
+    name="navigation_use_goal_sanitizer"
+    default="true" />
+  <arg
     name="x"
     default="0.0" />
   <arg
@@ -68,6 +77,15 @@
     <arg
       name="enable_navigation"
       value="true" />
+    <arg
+      name="navigation_use_amcl"
+      value="$(arg navigation_use_amcl)" />
+    <arg
+      name="navigation_use_ground_truth_localization"
+      value="$(arg navigation_use_ground_truth_localization)" />
+    <arg
+      name="navigation_use_goal_sanitizer"
+      value="$(arg navigation_use_goal_sanitizer)" />
     <arg
       name="enable_docking"
       value="false" />

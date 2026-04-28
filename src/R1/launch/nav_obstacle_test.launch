@@ -24,8 +24,17 @@
     name="rviz"
     default="true" />
   <arg
-    name="enable_planar_test_guard"
+    name="navigation_use_amcl"
+    default="false" />
+  <arg
+    name="navigation_use_ground_truth_localization"
     default="true" />
+  <arg
+    name="navigation_use_goal_sanitizer"
+    default="true" />
+  <arg
+    name="enable_planar_test_guard"
+    default="false" />
   <arg
     name="x"
     default="0.0" />
@@ -75,6 +84,15 @@
       name="enable_navigation"
       value="true" />
     <arg
+      name="navigation_use_amcl"
+      value="$(arg navigation_use_amcl)" />
+    <arg
+      name="navigation_use_ground_truth_localization"
+      value="$(arg navigation_use_ground_truth_localization)" />
+    <arg
+      name="navigation_use_goal_sanitizer"
+      value="$(arg navigation_use_goal_sanitizer)" />
+    <arg
       name="enable_docking"
       value="false" />
     <arg
@@ -91,6 +109,9 @@
       value="$(arg yaw)" />
     <arg
       name="enable_cmd_vel_limiter"
+      value="false" />
+    <arg
+      name="enable_cmd_vel_collision_guard"
       value="false" />
   </include>
 </launch>

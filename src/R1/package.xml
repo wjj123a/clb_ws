@@ -12,15 +12,22 @@ for R1 robot</p>
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <depend>ackermann_steering_controller</depend>
   <depend>actionlib</depend>
   <depend>actionlib_msgs</depend>
   <depend>amcl</depend>
+  <depend>base_local_planner</depend>
+  <depend>clear_costmap_recovery</depend>
+  <depend>controller_manager</depend>
+  <depend>gazebo_msgs</depend>
   <depend>dwa_local_planner</depend>
   <depend>gazebo</depend>
   <depend>gazebo_plugins</depend>
   <depend>gazebo_ros</depend>
+  <depend>gazebo_ros_control</depend>
   <depend>geometry_msgs</depend>
   <depend>global_planner</depend>
+  <depend>hardware_interface</depend>
   <depend>joint_state_publisher_gui</depend>
   <depend>map_server</depend>
   <depend>move_base</depend>
@@ -36,10 +43,11 @@ for R1 robot</p>
   <depend>gmapping</depend>
   <depend>std_srvs</depend>
   <depend>tf</depend>
+  <depend>tf2_ros</depend>
+  <depend>topic_tools</depend>
+  <depend>transmission_interface</depend>
   <depend>rtabmap_slam</depend>
   <depend>rtabmap_sync</depend>
-  <exec_depend>gazebo_msgs</exec_depend>
-
   <export>
     <architecture_independent />
   </export>

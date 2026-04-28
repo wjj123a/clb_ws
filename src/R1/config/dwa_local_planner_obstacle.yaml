@@ -4,47 +4,55 @@ base_local_planner: dwa_local_planner/DWAPlannerROS
 planner_frequency: 2.0
 controller_frequency: 10.0
 planner_patience: 3.0
-controller_patience: 10.0
-oscillation_timeout: 8.0
-oscillation_distance: 0.30
+controller_patience: 24.0
+oscillation_timeout: 24.0
+oscillation_distance: 0.60
 shutdown_costmaps: false
 recovery_behavior_enabled: true
-clearing_rotation_allowed: true
+clearing_rotation_allowed: false
 
 DWAPlannerROS:
   odom_topic: odom
   holonomic_robot: false
 
-  max_vel_x: 0.22
-  min_vel_x: -0.06
-  max_vel_trans: 0.22
-  min_vel_trans: 0.00
-  max_vel_theta: 0.50
-  min_vel_theta: 0.10
+  max_vel_x: 0.14
+  min_vel_x: 0.09
+  max_vel_y: 0.00
+  min_vel_y: 0.00
+  max_vel_trans: 0.14
+  min_vel_trans: 0.09
+  max_vel_theta: 0.13
+  min_vel_theta: 0.00
+  penalize_negative_x: true
 
-  acc_lim_x: 0.90
-  acc_lim_theta: 0.80
+  acc_lim_x: 0.20
+  acc_lim_theta: 0.20
 
-  yaw_goal_tolerance: 0.45
-  xy_goal_tolerance: 0.20
+  yaw_goal_tolerance: 3.14
+  # Keep endpoint acceptance tighter than the front obstacle stop distance.
+  xy_goal_tolerance: 0.30
   latch_xy_goal_tolerance: true
+  trans_stopped_vel: 0.02
+  theta_stopped_vel: 0.05
 
-  sim_time: 2.4
+  sim_time: 4.0
   sim_granularity: 0.025
   angular_sim_granularity: 0.05
-  vx_samples: 18
-  vy_samples: 0
-  vth_samples: 36
+  vx_samples: 12
+  vy_samples: 1
+  vth_samples: 41
 
-  path_distance_bias: 18.0
-  goal_distance_bias: 10.0
-  occdist_scale: 0.35
-  forward_point_distance: 0.24
-  stop_time_buffer: 0.30
-  scaling_speed: 0.16
+  # The front-drive Ackermann chassis cannot spin in place. Keep DWA's sampled
+  # yaw rates inside the curve radius the steering joint can actually produce.
+  path_distance_bias: 26.0
+  goal_distance_bias: 12.0
+  occdist_scale: 1.60
+  forward_point_distance: 0.35
+  stop_time_buffer: 0.50
+  scaling_speed: 0.12
   max_scaling_factor: 0.20
 
-  oscillation_reset_dist: 0.45
+  oscillation_reset_dist: 1.00
   prune_plan: true
   publish_traj_pc: false
   publish_cost_grid_pc: false

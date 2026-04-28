@@ -12,6 +12,12 @@
     name="use_sim_time"
     default="true" />
   <arg
+    name="physics"
+    default="ode" />
+  <arg
+    name="verbose"
+    default="false" />
+  <arg
     name="x"
     default="0.0" />
   <arg
@@ -31,7 +37,7 @@
     default="0.0" />
   <arg
     name="cmd_vel_max_angular_z"
-    default="0.50" />
+    default="0.32" />
   <arg
     name="cmd_vel_max_linear_accel"
     default="0.40" />
@@ -44,40 +50,137 @@
   <arg
     name="enable_cmd_vel_limiter"
     default="false" />
+  <arg
+    name="enable_cmd_vel_collision_guard"
+    default="false" />
+  <arg
+    name="enable_ackermann_effort_bridge"
+    default="true" />
+  <arg
+    name="use_ground_truth_odom"
+    default="true" />
+  <arg
+    name="enable_controller_odom_relay"
+    default="false" />
+  <arg
+    name="robot_model_name"
+    default="R1" />
+  <arg
+    name="gazebo_home_dir"
+    default="$(find r1)/gazebo_home" />
+  <arg
+    name="enable_depth_camera"
+    default="false" />
+  <arg
+    name="enable_laser_visualization"
+    default="false" />
+  <arg
+    name="extra_gazebo_model_path"
+    default="$(optenv GAZEBO_MODEL_PATH)" />
 
   <param
     name="use_sim_time"
     value="$(arg use_sim_time)" />
 
-  <include
-    file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg
-      name="world_name"
-      value="$(arg world_name)" />
-    <arg
-      name="gui"
-      value="$(arg gui)" />
-    <arg
-      name="paused"
-      value="$(arg paused)" />
-    <arg
-      name="use_sim_time"
-      value="$(arg use_sim_time)" />
-  </include>
+  <arg
+    unless="$(arg paused)"
+    name="gazebo_pause_arg"
+    value="" />
+  <arg
+    if="$(arg paused)"
+    name="gazebo_pause_arg"
+    value="-u" />
+  <arg
+    unless="$(arg verbose)"
+    name="gazebo_verbose_arg"
+    value="" />
+  <arg
+    if="$(arg verbose)"
+    name="gazebo_verbose_arg"
+    value="--verbose" />
+
+  <param
+    name="gazebo/enable_ros_network"
+    value="true" />
+
+  <node
+    name="gazebo"
+    pkg="gazebo_ros"
+    type="gzserver"
+    output="screen"
+    args="$(arg gazebo_pause_arg) $(arg gazebo_verbose_arg) -e $(arg physics) $(arg world_name)">
+    <env
+      name="HOME"
+      value="$(arg gazebo_home_dir)" />
+    <env
+      name="GAZEBO_MODEL_DATABASE_URI"
+      value="" />
+    <env
+      name="GAZEBO_MODEL_PATH"
+      value="$(arg extra_gazebo_model_path)" />
+    <env
+      name="HTTP_PROXY"
+      value="" />
+    <env
+      name="HTTPS_PROXY"
+      value="" />
+    <env
+      name="ALL_PROXY"
+      value="" />
+    <env
+      name="http_proxy"
+      value="" />
+    <env
+      name="https_proxy"
+      value="" />
+    <env
+      name="all_proxy"
+      value="" />
+  </node>
+
+  <node
+    if="$(arg gui)"
+    name="gazebo_gui"
+    pkg="gazebo_ros"
+    type="gzclient"
+    output="screen"
+    args="$(arg gazebo_verbose_arg)">
+    <env
+      name="HOME"
+      value="$(arg gazebo_home_dir)" />
+    <env
+      name="GAZEBO_MODEL_DATABASE_URI"
+      value="" />
+    <env
+      name="GAZEBO_MODEL_PATH"
+      value="$(arg extra_gazebo_model_path)" />
+    <env
+      name="HTTP_PROXY"
+      value="" />
+    <env
+      name="HTTPS_PROXY"
+      value="" />
+    <env
+      name="ALL_PROXY"
+      value="" />
+    <env
+      name="http_proxy"
+      value="" />
+    <env
+      name="https_proxy"
+      value="" />
+    <env
+      name="all_proxy"
+      value="" />
+  </node>
 
   <param
     name="robot_description"
     textfile="$(find r1)/urdf/R1.urdf" />
 
-  <node
-    name="joint_state_publisher"
-    pkg="r1"
-    type="static_joint_state_publisher.py"
-    output="screen">
-    <env
-      name="PYTHONPATH"
-      value="$(find r1)/../../python_vendor:$(optenv PYTHONPATH)" />
-  </node>
+  <rosparam
+    command="load"
+    file="$(find r1)/config/ros_controllers.yaml" />
 
   <node
     name="robot_state_publisher"
@@ -118,7 +221,7 @@
       to="cmd_vel" />
     <remap
       from="cmd_vel_out"
-      to="cmd_vel_safe" />
+      to="cmd_vel_limited" />
   </node>
 
   <node
@@ -126,17 +229,196 @@
     name="cmd_vel_passthrough"
     pkg="topic_tools"
     type="relay"
-    args="cmd_vel cmd_vel_safe"
+    args="cmd_vel cmd_vel_limited"
+    output="screen" />
+
+  <node
+    if="$(arg enable_cmd_vel_collision_guard)"
+    name="cmd_vel_collision_guard"
+    pkg="r1"
+    type="cmd_vel_collision_guard.py"
+    output="screen">
+    <param
+      name="front_angle"
+      value="0.65" />
+    <param
+      name="stop_distance"
+      value="0.45" />
+    <param
+      name="slow_distance"
+      value="0.85" />
+    <param
+      name="self_filter_distance"
+      value="0.20" />
+    <param
+      name="scan_timeout"
+      value="0.50" />
+    <remap
+      from="cmd_vel_in"
+      to="cmd_vel_limited" />
+    <remap
+      from="cmd_vel_out"
+      to="cmd_vel_safe" />
+    <remap
+      from="scan"
+      to="scan" />
+  </node>
+
+  <node
+    unless="$(arg enable_cmd_vel_collision_guard)"
+    name="cmd_vel_safe_relay"
+    pkg="topic_tools"
+    type="relay"
+    args="cmd_vel_limited cmd_vel_safe"
+    output="screen" />
+
+  <node
+    name="ackermann_cmd_vel_adapter"
+    pkg="r1"
+    type="ackermann_cmd_vel_adapter.py"
+    output="screen">
+    <param
+      name="wheelbase"
+      value="0.41893" />
+    <param
+      name="max_steer_angle"
+      value="0.55" />
+    <param
+      name="min_turning_speed"
+      value="0.04" />
+    <remap
+      from="cmd_vel_in"
+      to="cmd_vel_safe" />
+    <remap
+      from="cmd_vel_out"
+      to="/base_controller/cmd_vel" />
+  </node>
+
+  <node
+    if="$(arg enable_ackermann_effort_bridge)"
+    name="gazebo_ackermann_effort_bridge"
+    pkg="r1"
+    type="gazebo_ackermann_effort_bridge.py"
+    output="screen">
+    <param
+      name="gazebo_wheel_joint"
+      value="$(arg robot_model_name)::front_drive_wheel_joint" />
+    <param
+      name="gazebo_steer_joint"
+      value="$(arg robot_model_name)::front_steer_joint" />
+    <param
+      name="wheel_radius"
+      value="0.04075" />
+    <param
+      name="max_steer_angle"
+      value="0.55" />
+    <param
+      name="drive_effort_per_mps"
+      value="50.0" />
+    <param
+      name="drive_kp"
+      value="80.0" />
+    <param
+      name="drive_damping"
+      value="0.05" />
+    <param
+      name="idle_drive_damping"
+      value="0.02" />
+    <param
+      name="idle_linear_brake"
+      value="120.0" />
+    <param
+      name="drive_effort_limit"
+      value="35.0" />
+    <param
+      name="steer_kp"
+      value="700.0" />
+    <param
+      name="steer_kd"
+      value="45.0" />
+    <param
+      name="steer_effort_limit"
+      value="350.0" />
+    <remap
+      from="cmd_vel"
+      to="/base_controller/cmd_vel" />
+    <remap
+      from="joint_states"
+      to="/joint_states" />
+    <remap
+      from="ground_truth_odom"
+      to="/ground_truth_odom" />
+  </node>
+
+  <node
+    if="$(arg use_ground_truth_odom)"
+    name="odom_sanitizer"
+    pkg="r1"
+    type="odom_sanitizer.py"
+    output="screen">
+    <param
+      name="input_topic"
+      value="ground_truth_odom" />
+    <param
+      name="output_topic"
+      value="odom" />
+    <param
+      name="publish_tf"
+      value="true" />
+    <param
+      name="output_frame_id"
+      value="odom" />
+    <param
+      name="output_child_frame_id"
+      value="base_footprint" />
+  </node>
+
+  <node
+    if="$(arg enable_controller_odom_relay)"
+    name="base_controller_odom_relay"
+    pkg="topic_tools"
+    type="relay"
+    args="/base_controller/odom odom"
     output="screen" />
 
   <node
     name="spawn_model"
-    pkg="gazebo_ros"
-    type="spawn_model"
-    args="-urdf -param robot_description -model R1 -x $(arg x) -y $(arg y) -z $(arg z) -Y $(arg yaw)"
+    pkg="r1"
+    type="spawn_robot_model.py"
     output="screen">
-    <env
-      name="PYTHONPATH"
-      value="$(find r1)/../../python_vendor:$(optenv PYTHONPATH)" />
+    <param
+      name="model_name"
+      value="$(arg robot_model_name)" />
+    <param
+      name="description_param"
+      value="robot_description" />
+    <param
+      name="x"
+      value="$(arg x)" />
+    <param
+      name="y"
+      value="$(arg y)" />
+    <param
+      name="z"
+      value="$(arg z)" />
+    <param
+      name="yaw"
+      value="$(arg yaw)" />
+    <param
+      name="strip_depth_camera"
+      value="$(eval not arg('enable_depth_camera'))" />
+    <param
+      name="disable_laser_visualization"
+      value="$(eval not arg('enable_laser_visualization'))" />
+    <param
+      name="reference_frame"
+      value="world" />
   </node>
+
+  <node
+    name="controller_spawner"
+    pkg="controller_manager"
+    type="spawner"
+    args="--timeout 120 base_controller"
+    output="screen" />
 </launch>

@@ -3,6 +3,18 @@
     name="world_name"
     default="$(find r1)/worlds/charging_arena.world" />
   <arg
+    name="paused"
+    default="false" />
+  <arg
+    name="use_sim_time"
+    default="true" />
+  <arg
+    name="physics"
+    default="ode" />
+  <arg
+    name="verbose"
+    default="false" />
+  <arg
     name="base_local_planner_config"
     default="$(find r1)/config/base_local_planner.yaml" />
   <arg
@@ -18,6 +30,21 @@
     name="map_file"
     default="$(find r1)/maps/charging_arena.yaml" />
   <arg
+    name="gmapping_xmin"
+    default="-10.0" />
+  <arg
+    name="gmapping_ymin"
+    default="-10.0" />
+  <arg
+    name="gmapping_xmax"
+    default="10.0" />
+  <arg
+    name="gmapping_ymax"
+    default="10.0" />
+  <arg
+    name="gmapping_delta"
+    default="0.05" />
+  <arg
     name="rviz"
     default="true" />
   <arg
@@ -26,6 +53,9 @@
   <arg
     name="rviz_config"
     default="$(find r1)/rviz/sim.rviz" />
+  <arg
+    name="navigation_backend"
+    default="static_map" />
   <arg
     name="enable_navigation"
     default="false" />
@@ -36,8 +66,14 @@
     name="navigation_use_amcl"
     default="false" />
   <arg
+    name="navigation_use_ground_truth_localization"
+    default="true" />
+  <arg
     name="navigation_use_odom_sanitizer"
     default="false" />
+  <arg
+    name="navigation_use_goal_sanitizer"
+    default="true" />
   <arg
     name="enable_docking"
     default="false" />
@@ -64,7 +100,7 @@
     default="0.0" />
   <arg
     name="cmd_vel_max_angular_z"
-    default="0.50" />
+    default="0.32" />
   <arg
     name="cmd_vel_max_linear_accel"
     default="0.40" />
@@ -77,9 +113,39 @@
   <arg
     name="enable_cmd_vel_limiter"
     default="false" />
+  <arg
+    name="enable_cmd_vel_collision_guard"
+    default="false" />
+  <arg
+    name="use_ground_truth_odom"
+    default="true" />
+  <arg
+    name="enable_controller_odom_relay"
+    default="false" />
+  <arg
+    name="enable_depth_camera"
+    default="false" />
+  <arg
+    name="enable_laser_visualization"
+    default="false" />
+  <arg
+    name="extra_gazebo_model_path"
+    default="$(optenv GAZEBO_MODEL_PATH)" />
 
   <include
     file="$(find r1)/launch/gazebo.launch">
+    <arg
+      name="paused"
+      value="$(arg paused)" />
+    <arg
+      name="use_sim_time"
+      value="$(arg use_sim_time)" />
+    <arg
+      name="physics"
+      value="$(arg physics)" />
+    <arg
+      name="verbose"
+      value="$(arg verbose)" />
     <arg
       name="gui"
       value="$(arg gui)" />
@@ -119,6 +185,44 @@
     <arg
       name="enable_cmd_vel_limiter"
       value="$(arg enable_cmd_vel_limiter)" />
+    <arg
+      name="enable_cmd_vel_collision_guard"
+      value="$(arg enable_cmd_vel_collision_guard)" />
+    <arg
+      name="use_ground_truth_odom"
+      value="$(arg use_ground_truth_odom)" />
+    <arg
+      name="enable_controller_odom_relay"
+      value="$(arg enable_controller_odom_relay)" />
+    <arg
+      name="enable_depth_camera"
+      value="$(arg enable_depth_camera)" />
+    <arg
+      name="enable_laser_visualization"
+      value="$(arg enable_laser_visualization)" />
+    <arg
+      name="extra_gazebo_model_path"
+      value="$(arg extra_gazebo_model_path)" />
+  </include>
+
+  <include
+    if="$(eval arg('run_navigation') and arg('navigation_backend') == 'gmapping')"
+    file="$(find r1)/launch/mapping_laser.launch">
+    <arg
+      name="xmin"
+      value="$(arg gmapping_xmin)" />
+    <arg
+      name="ymin"
+      value="$(arg gmapping_ymin)" />
+    <arg
+      name="xmax"
+      value="$(arg gmapping_xmax)" />
+    <arg
+      name="ymax"
+      value="$(arg gmapping_ymax)" />
+    <arg
+      name="delta"
+      value="$(arg gmapping_delta)" />
   </include>
 
   <include
@@ -140,17 +244,23 @@
       name="map_file"
       value="$(arg map_file)" />
     <arg
+      name="map_mode"
+      value="$(eval 'slam' if arg('navigation_backend') == 'gmapping' else 'static')" />
+    <arg
       name="use_amcl"
-      value="$(arg navigation_use_amcl)" />
+      value="$(eval False if arg('navigation_backend') == 'gmapping' else arg('navigation_use_amcl'))" />
+    <arg
+      name="use_ground_truth_localization"
+      value="$(eval False if arg('navigation_backend') == 'gmapping' else arg('navigation_use_ground_truth_localization'))" />
     <arg
       name="use_odom_sanitizer"
-      value="$(arg navigation_use_odom_sanitizer)" />
+      value="$(eval False if arg('navigation_backend') == 'gmapping' else arg('navigation_use_odom_sanitizer'))" />
     <arg
       name="odom_input_topic"
       value="ground_truth_odom" />
     <arg
       name="odom_topic"
-      value="$(eval 'ground_truth_odom_sanitized' if arg('navigation_use_odom_sanitizer') else 'odom')" />
+      value="$(eval 'ground_truth_odom_sanitized' if (arg('navigation_backend') != 'gmapping' and arg('navigation_use_odom_sanitizer')) else 'odom')" />
     <arg
       name="initial_pose_x"
       value="$(arg x)" />
@@ -160,6 +270,9 @@
     <arg
       name="initial_pose_a"
       value="$(arg yaw)" />
+    <arg
+      name="use_goal_sanitizer"
+      value="$(arg navigation_use_goal_sanitizer)" />
   </include>
 
   <include

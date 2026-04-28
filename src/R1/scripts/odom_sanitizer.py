@@ -58,6 +58,7 @@ class OdomSanitizer(object):
         input_topic = rospy.get_param("~input_topic", "ground_truth_odom")
         self.publish_tf = rospy.get_param("~publish_tf", False)
         self.output_frame_id = rospy.get_param("~output_frame_id", "")
+        self.output_child_frame_id = rospy.get_param("~output_child_frame_id", "")
 
         self.publisher = rospy.Publisher(output_topic, Odometry, queue_size=10)
         self.subscriber = rospy.Subscriber(input_topic, Odometry, self.handle_odom, queue_size=10)
@@ -69,6 +70,8 @@ class OdomSanitizer(object):
         sanitized = copy.deepcopy(message)
         if self.output_frame_id:
             sanitized.header.frame_id = self.output_frame_id
+        if self.output_child_frame_id:
+            sanitized.child_frame_id = self.output_child_frame_id
 
         pose = sanitized.pose.pose
         if vector_is_finite(pose.position) and quaternion_is_valid(pose.orientation):
@@ -125,7 +128,13 @@ class OdomSanitizer(object):
 
         self.last_planar_state = (planar_x, planar_y, yaw, stamp)
 
-        self.publisher.publish(sanitized)
+        if rospy.is_shutdown():
+            return
+
+        try:
+            self.publisher.publish(sanitized)
+        except rospy.ROSException:
+            return
 
         if self.tf_broadcaster is not None:
             pose = sanitized.pose.pose

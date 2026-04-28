@@ -1,15 +1,15 @@
 transform_tolerance: 0.5
 footprint:
-  - [0.30, 0.16]
-  - [0.30, -0.16]
-  - [-0.26, -0.16]
-  - [-0.26, 0.16]
-footprint_padding: 0.01
-inflation_radius: 0.10
-cost_scaling_factor: 7.0
+  - [0.34, 0.20]
+  - [0.34, -0.20]
+  - [-0.30, -0.20]
+  - [-0.30, 0.20]
+footprint_padding: 0.04
+inflation_radius: 0.35
+cost_scaling_factor: 3.0
 obstacle_layer:
-  obstacle_range: 4.0
-  raytrace_range: 5.0
+  obstacle_range: 6.0
+  raytrace_range: 8.0
   max_obstacle_height: 1.5
   observation_sources: laser_scan_sensor
   laser_scan_sensor:

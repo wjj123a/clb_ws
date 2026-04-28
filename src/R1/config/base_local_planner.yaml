@@ -9,7 +9,7 @@ oscillation_timeout: 10.0
 oscillation_distance: 0.20
 shutdown_costmaps: false
 recovery_behavior_enabled: true
-clearing_rotation_allowed: true
+clearing_rotation_allowed: false
 
 TrajectoryPlannerROS:
   odom_topic: odom
@@ -17,16 +17,16 @@ TrajectoryPlannerROS:
 
   max_vel_x: 0.22
   min_vel_x: -0.04
-  min_in_place_vel_theta: 0.08
+  min_in_place_vel_theta: 0.02
   escape_vel: -0.08
-  max_vel_theta: 0.50
-  min_vel_theta: -0.50
+  max_vel_theta: 0.32
+  min_vel_theta: -0.32
 
   acc_lim_x: 0.65
-  acc_lim_theta: 0.90
+  acc_lim_theta: 0.45
 
   xy_goal_tolerance: 0.22
-  yaw_goal_tolerance: 0.35
+  yaw_goal_tolerance: 3.14
   latch_xy_goal_tolerance: true
 
   sim_time: 1.5

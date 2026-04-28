@@ -92,6 +92,12 @@
     <arg
       name="enable_cmd_vel_limiter"
       value="true" />
+    <arg
+      name="enable_depth_camera"
+      value="true" />
+    <arg
+      name="enable_laser_visualization"
+      value="false" />
   </include>
 
   <include

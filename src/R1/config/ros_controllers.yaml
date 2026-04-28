@@ -1,0 +1,47 @@
+# Ackermann front-drive simulation. The upstream controller uses one velocity
+# wheel joint and one position steering joint.
+gazebo_ros_control:
+  pid_gains:
+    front_steer_joint:
+      p: 1800.0
+      i: 0.0
+      d: 90.0
+      i_clamp: 0.0
+    front_drive_wheel_joint:
+      p: 400.0
+      i: 0.0
+      d: 5.0
+      i_clamp: 0.0
+
+base_controller:
+  type: "ackermann_steering_controller/AckermannSteeringController"
+  publish_rate: 50.0
+  rear_wheel: "front_drive_wheel_joint"
+  front_steer: "front_steer_joint"
+  wheel_radius: 0.04075
+  wheel_separation_h: 0.41893
+  steer_pos_multiplier: 1.0
+  cmd_vel_timeout: 0.5
+  base_frame_id: "base_link"
+  odom_frame_id: "odom"
+  enable_odom_tf: false
+  open_loop: false
+  velocity_rolling_window_size: 10
+  linear:
+    x:
+      has_velocity_limits: true
+      max_velocity: 0.22
+      min_velocity: -0.08
+      has_acceleration_limits: true
+      max_acceleration: 0.35
+      min_acceleration: -0.50
+  angular:
+    z:
+      has_velocity_limits: true
+      max_velocity: 0.55
+      min_velocity: -0.55
+      has_acceleration_limits: true
+      max_acceleration: 1.2
+      min_acceleration: -1.2
+  pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]
+  twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.03]

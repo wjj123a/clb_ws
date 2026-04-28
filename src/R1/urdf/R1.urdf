@@ -12,14 +12,14 @@
   <link name="base_link">
     <inertial>
       <origin xyz="0.02 0.0 0.12" rpy="0 0 0" />
-      <mass value="38.0603057004842" />
+      <mass value="470.0" />
       <inertia
-        ixx="0.70"
+        ixx="5.55"
         ixy="0.0"
         ixz="0.0"
-        iyy="1.10"
+        iyy="14.54"
         iyz="0.0"
-        izz="0.95" />
+        izz="15.58" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 3.14159265359" />
@@ -51,17 +51,83 @@
     </collision>
   </link>
 
+  <gazebo>
+    <canonicalBody>base_footprint</canonicalBody>
+  </gazebo>
+
+  <link name="front_steer_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="5.0" />
+      <inertia ixx="0.020" ixy="0" ixz="0" iyy="0.020" iyz="0" izz="0.030" />
+    </inertial>
+  </link>
+
+  <joint name="front_steer_joint" type="revolute">
+    <origin xyz="0.220127909860013 -0.009775 0.0" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="front_steer_link" />
+    <axis xyz="0 0 1" />
+    <limit lower="-0.6" upper="0.6" effort="5000" velocity="1.5" />
+    <dynamics damping="20.0" friction="2.0" />
+  </joint>
+
+  <transmission name="front_steer_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="front_steer_motor">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="front_steer_joint">
+      <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+
+  <link name="front_drive_wheel_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="12.0" />
+      <inertia ixx="0.0066" ixy="0" ixz="0" iyy="0.0100" iyz="0" izz="0.0066" />
+    </inertial>
+    <collision>
+      <origin xyz="0 0 0" rpy="1.57079632679 0 0" />
+      <geometry>
+        <cylinder radius="0.04075" length="0.040" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_drive_wheel_joint" type="continuous">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="front_steer_link" />
+    <child link="front_drive_wheel_link" />
+    <axis xyz="0 1 0" />
+    <limit effort="1200" velocity="30" />
+    <dynamics damping="0.5" friction="0.1" />
+  </joint>
+
+  <transmission name="front_drive_wheel_transmission">
+    <type>transmission_interface/SimpleTransmission</type>
+    <actuator name="front_drive_wheel_motor">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+    <joint name="front_drive_wheel_joint">
+      <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+    </joint>
+  </transmission>
+
   <link name="Empty_Link1">
     <inertial>
       <origin xyz="-2.71421483177825E-07 0.0178376569876221 8.49577653054003E-08" rpy="0 0 0" />
-      <mass value="0.102007563940439" />
+      <mass value="1.0" />
       <inertia
-        ixx="6.03197633111551E-05"
+        ixx="5.5E-04"
         ixy="-1.09650777535302E-10"
         ixz="7.71132214702415E-10"
-        iyy="9.37857965039355E-05"
+        iyy="8.3E-04"
         iyz="9.81331506021422E-10"
-        izz="6.03194335121187E-05" />
+        izz="5.5E-04" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -72,34 +138,28 @@
         <color rgba="0.152941176470588 0.152941176470588 0.152941176470588 1" />
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0.0175 0" rpy="1.57079632679 0 0" />
-      <geometry>
-        <cylinder radius="0.04075" length="0.040" />
-      </geometry>
-    </collision>
   </link>
 
   <joint name="J1" type="continuous">
-    <origin xyz="0.220127909860013 0.122535316479216 0.0" rpy="0 0 0" />
-    <parent link="base_link" />
+    <origin xyz="0 0.132310316479216 0.0" rpy="0 0 0" />
+    <parent link="front_steer_link" />
     <child link="Empty_Link1" />
     <axis xyz="0 1 0" />
-    <limit effort="20" velocity="20" />
-    <dynamics damping="2.0" friction="0.2" />
+    <limit effort="200" velocity="20" />
+    <dynamics damping="0.2" friction="0.05" />
   </joint>
 
   <link name="Empty_Link2">
     <inertial>
       <origin xyz="-2.81109255456657E-07 0.00171272065277243 -1.72457881711047E-07" rpy="0 0 0" />
-      <mass value="0.102007476255524" />
+      <mass value="1.0" />
       <inertia
-        ixx="6.03196775650763E-05"
+        ixx="5.5E-04"
         ixy="-1.30454716001587E-10"
         ixz="8.2130239199344E-10"
-        iyy="9.37857280988688E-05"
+        iyy="8.3E-04"
         iyz="9.77509097955072E-10"
-        izz="6.03194264639649E-05" />
+        izz="5.5E-04" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -110,34 +170,28 @@
         <color rgba="0.152941176470588 0.152941176470588 0.152941176470588 1" />
       </material>
     </visual>
-    <collision>
-      <origin xyz="0 0.0020 0" rpy="1.57079632679 0 0" />
-      <geometry>
-        <cylinder radius="0.04075" length="0.040" />
-      </geometry>
-    </collision>
   </link>
 
   <joint name="J2" type="continuous">
-    <origin xyz="0.220127909860013 -0.142085316479216 0.0" rpy="0 0 0" />
-    <parent link="base_link" />
+    <origin xyz="0 -0.132310316479216 0.0" rpy="0 0 0" />
+    <parent link="front_steer_link" />
     <child link="Empty_Link2" />
-    <axis xyz="0 -1 0" />
-    <limit effort="20" velocity="20" />
-    <dynamics damping="2.0" friction="0.2" />
+    <axis xyz="0 1 0" />
+    <limit effort="200" velocity="20" />
+    <dynamics damping="0.2" friction="0.05" />
   </joint>
 
   <link name="Empty_Link3">
     <inertial>
       <origin xyz="3.76217621722574E-07 -0.00343116064614217 1.77734477486638E-07" rpy="0 0 0" />
-      <mass value="0.130385211409052" />
+      <mass value="6.0" />
       <inertia
-        ixx="7.86812106003073E-05"
+        ixx="0.0036"
         ixy="5.53858346756479E-11"
         ixz="9.23581794342341E-08"
-        iyy="0.000108048071855382"
+        iyy="0.0050"
         iyz="-1.15152881530515E-10"
-        izz="7.82862361574103E-05" />
+        izz="0.0036" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -160,22 +214,22 @@
     <origin xyz="-0.19879978611665 -0.122535316479219 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link3" />
-    <axis xyz="0 -1 0" />
-    <limit effort="20" velocity="20" />
-    <dynamics damping="2.0" friction="0.2" />
+    <axis xyz="0 1 0" />
+    <limit effort="200" velocity="20" />
+    <dynamics damping="0.5" friction="0.1" />
   </joint>
 
   <link name="Empty_Link4">
     <inertial>
       <origin xyz="3.64091904681008E-07 0.000181544843160394 3.71723492477368E-07" rpy="0 0 0" />
-      <mass value="0.130386181839137" />
+      <mass value="6.0" />
       <inertia
-        ixx="7.86817593166718E-05"
+        ixx="0.0036"
         ixy="7.73070482159629E-11"
         ixz="9.25265700656962E-08"
-        iyy="0.00010804820646223"
+        iyy="0.0050"
         iyz="-1.16088106414147E-10"
-        izz="7.82861601090754E-05" />
+        izz="0.0036" />
     </inertial>
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
@@ -199,8 +253,8 @@
     <parent link="base_link" />
     <child link="Empty_Link4" />
     <axis xyz="0 1 0" />
-    <limit effort="20" velocity="20" />
-    <dynamics damping="2.0" friction="0.2" />
+    <limit effort="200" velocity="20" />
+    <dynamics damping="0.5" friction="0.1" />
   </joint>
 
   <link name="imu_link">
@@ -255,56 +309,79 @@
 
   <gazebo reference="base_link">
     <material>Gazebo/White</material>
-    <mu1>0.8</mu1>
-    <mu2>0.8</mu2>
-    <slip1>0.10</slip1>
-    <slip2>0.10</slip2>
-    <kp>30000.0</kp>
-    <kd>5.0</kd>
+    <mu1>1.2</mu1>
+    <mu2>1.2</mu2>
+    <slip1>0.01</slip1>
+    <slip2>0.01</slip2>
+    <kp>1000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
+  </gazebo>
+
+  <gazebo reference="front_drive_wheel_link">
+    <material>Gazebo/Black</material>
+    <mu1>2.4</mu1>
+    <mu2>1.2</mu2>
+    <fdir1>1 0 0</fdir1>
+    <slip1>0.0</slip1>
+    <slip2>0.01</slip2>
+    <kp>5000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
   </gazebo>
 
   <gazebo reference="Empty_Link1">
     <material>Gazebo/Black</material>
-    <mu1>4.0</mu1>
-    <mu2>4.0</mu2>
+    <mu1>1.6</mu1>
+    <mu2>0.8</mu2>
     <fdir1>1 0 0</fdir1>
-    <slip1>0.05</slip1>
-    <slip2>0.05</slip2>
-    <kp>50000.0</kp>
-    <kd>5.0</kd>
+    <slip1>0.0</slip1>
+    <slip2>0.02</slip2>
+    <kp>5000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
   </gazebo>
 
   <gazebo reference="Empty_Link2">
     <material>Gazebo/Black</material>
-    <mu1>4.0</mu1>
-    <mu2>4.0</mu2>
+    <mu1>1.6</mu1>
+    <mu2>0.8</mu2>
     <fdir1>1 0 0</fdir1>
-    <slip1>0.05</slip1>
-    <slip2>0.05</slip2>
-    <kp>50000.0</kp>
-    <kd>5.0</kd>
+    <slip1>0.0</slip1>
+    <slip2>0.02</slip2>
+    <kp>5000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
   </gazebo>
 
   <gazebo reference="Empty_Link3">
     <material>Gazebo/Black</material>
-    <mu1>4.0</mu1>
-    <mu2>4.0</mu2>
+    <mu1>1.6</mu1>
+    <mu2>0.8</mu2>
     <fdir1>1 0 0</fdir1>
-    <slip1>0.05</slip1>
-    <slip2>0.05</slip2>
-    <kp>50000.0</kp>
-    <kd>5.0</kd>
+    <slip1>0.0</slip1>
+    <slip2>0.02</slip2>
+    <kp>5000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
   </gazebo>
 
   <gazebo reference="Empty_Link4">
     <material>Gazebo/Black</material>
-    <mu1>4.0</mu1>
-    <mu2>4.0</mu2>
+    <mu1>1.6</mu1>
+    <mu2>0.8</mu2>
     <fdir1>1 0 0</fdir1>
-    <slip1>0.05</slip1>
-    <slip2>0.05</slip2>
-    <kp>50000.0</kp>
-    <kd>5.0</kd>
+    <slip1>0.0</slip1>
+    <slip2>0.02</slip2>
+    <kp>5000000.0</kp>
+    <kd>200.0</kd>
+    <maxVel>2.0</maxVel>
+    <minDepth>0.001</minDepth>
   </gazebo>
 
   <gazebo reference="laser_link">
@@ -346,7 +423,7 @@
       <update_rate>50.0</update_rate>
       <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
         <alwaysOn>true</alwaysOn>
-        <bodyName>imu_link</bodyName>
+        <bodyName>base_footprint</bodyName>
         <topicName>imu/data</topicName>
         <frameName>imu_link</frameName>
         <gaussianNoise>0.002</gaussianNoise>
@@ -403,7 +480,7 @@
     <plugin name="ground_truth_odom" filename="libgazebo_ros_p3d.so">
       <alwaysOn>true</alwaysOn>
       <updateRate>50.0</updateRate>
-      <bodyName>base_link</bodyName>
+      <bodyName>base_footprint</bodyName>
       <topicName>ground_truth_odom</topicName>
       <frameName>world</frameName>
       <localTwist>true</localTwist>
@@ -414,14 +491,17 @@
   </gazebo>
 
   <gazebo>
-    <plugin name="planar_move" filename="libgazebo_ros_planar_move.so">
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
       <robotNamespace>/</robotNamespace>
-      <commandTopic>cmd_vel_safe</commandTopic>
-      <odometryTopic>odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
-      <robotBaseFrame>base_footprint</robotBaseFrame>
-      <odometryRate>50.0</odometryRate>
-      <cmdTimeout>0.5</cmdTimeout>
+    </plugin>
+  </gazebo>
+
+  <gazebo>
+    <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+      <robotNamespace>/</robotNamespace>
+      <jointName>front_steer_joint, front_drive_wheel_joint, J1, J2, J3, J4</jointName>
+      <updateRate>50.0</updateRate>
+      <alwaysOn>true</alwaysOn>
     </plugin>
   </gazebo>
 </robot>
