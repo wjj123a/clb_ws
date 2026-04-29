@@ -9,7 +9,7 @@ recovery_behavior_enabled: true
 clearing_rotation_allowed: false
 max_planning_retries: 3
 base_global_planner: global_planner/GlobalPlanner
-base_local_planner: dwa_local_planner/DWAPlannerROS
+base_local_planner: teb_local_planner/TebLocalPlannerROS
 recovery_behaviors:
   - {name: conservative_reset, type: clear_costmap_recovery/ClearCostmapRecovery}
   - {name: aggressive_reset, type: clear_costmap_recovery/ClearCostmapRecovery}

@@ -20,10 +20,10 @@ That launches:
 - the local `R1` robot model
 - RViz with a navigation layout
 - `map_server + AMCL + move_base`
-- laser and RGB-D point-cloud local obstacle avoidance
-- a `/cmd_vel` safety supervisor that slows or stops the robot when front-range braking distance or TTC is unsafe
+- 360-degree laser and RGB-D point-cloud local obstacle avoidance
+- an Ackermann command safety supervisor that slows or stops the robot when forward or reverse braking distance or TTC is unsafe
 - repeatable dynamic obstacles in `area.world`
-- `/cmd_vel` arbitration between RViz navigation and keyboard teleop
+- Ackermann command arbitration between RViz navigation and keyboard teleop
 
 After startup you can use RViz:
 
@@ -59,7 +59,13 @@ This uses:
 - `amcl`
 - `move_base`
 - `global_planner/GlobalPlanner`
-- `dwa_local_planner/DWAPlannerROS`
+- `teb_local_planner/TebLocalPlannerROS`
+
+TEB is configured for the R1 Ackermann geometry. Navigation commands use
+`cmd_angle_instead_rotvel:=true`, so the bridge treats `Twist.angular.z` as
+front steering angle instead of yaw rate. The default navigation steering
+limit is `0.35 rad`, giving `min_turning_radius = 0.41893 / tan(0.35) ~= 1.15 m`.
+Low-speed reverse is enabled for car-like recovery and final alignment.
 
 ### SLAM Mode
 
@@ -117,7 +123,7 @@ roslaunch zebrat r1_navigation_regression.launch enable_dynamic_obstacles:=true 
 
 ## Teleop
 
-Keyboard teleop publishes to `/cmd_vel_teleop`, and the arbiter forwards either teleop or navigation output to `/cmd_vel`.
+Keyboard teleop publishes to `/ackermann_cmd_teleop`, and the arbiter forwards either teleop or navigation output to `/ackermann_cmd`.
 
 Start teleop in a second terminal:
 
@@ -128,7 +134,7 @@ bash teleop_noetic.sh
 ```
 
 Teleop has short-term priority. When you stop sending keys, control returns to navigation automatically.
-Both teleop and navigation pass through `cmd_vel_safety_supervisor.py` before reaching Gazebo. Disable it only for raw controller tests with `enable_safety_supervisor:=false`.
+Both teleop and navigation pass through `ackermann_cmd_safety_supervisor.py` before reaching Gazebo. Disable it only for raw controller tests with `enable_safety_supervisor:=false`.
 
 ## RViz-Only Model View
 
@@ -191,6 +197,7 @@ roslaunch zebrat r1_map_builder.launch navigation_backend:=rtabmap
 - `R1` no longer depends on an external `../clb_ws/src/R1` package.
 - Gazebo uses `zebrat/urdf/R1.urdf`; RViz model display uses `zebrat/urdf/R1_rviz.urdf`.
 - The default static map asset is `zebrat/maps/area.yaml`.
+- R1 uses a 360-degree `/scan`; the safety supervisor checks the front sector while driving forward and the rear sector while reversing.
 - `navigation_backend:=rtabmap` automatically selects `zebrat/rviz/rtabmap_navigation.rviz` unless you pass an explicit `rviz_config:=...`.
 
 ## Paper

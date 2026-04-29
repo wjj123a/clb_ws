@@ -33,7 +33,10 @@
   <arg name="enable_safety_supervisor" default="true" />
   <arg name="safety_hard_stop_distance" default="0.25" />
   <arg name="safety_slowdown_distance" default="0.65" />
+  <arg name="safety_rear_angle" default="0.55" />
   <arg name="safety_ttc_stop_time" default="0.45" />
+  <arg name="ackermann_wheelbase" default="0.41893" />
+  <arg name="ackermann_nav_max_steering_angle" default="0.35" />
   <arg name="x" default="1.95" />
   <arg name="y" default="-1.65" />
   <arg name="z" default="0.04075" />
@@ -60,7 +63,10 @@
     <arg name="enable_safety_supervisor" value="$(arg enable_safety_supervisor)" />
     <arg name="safety_hard_stop_distance" value="$(arg safety_hard_stop_distance)" />
     <arg name="safety_slowdown_distance" value="$(arg safety_slowdown_distance)" />
+    <arg name="safety_rear_angle" value="$(arg safety_rear_angle)" />
     <arg name="safety_ttc_stop_time" value="$(arg safety_ttc_stop_time)" />
+    <arg name="ackermann_wheelbase" value="$(arg ackermann_wheelbase)" />
+    <arg name="ackermann_nav_max_steering_angle" value="$(arg ackermann_nav_max_steering_angle)" />
     <arg name="x" value="$(arg x)" />
     <arg name="y" value="$(arg y)" />
     <arg name="z" value="$(arg z)" />

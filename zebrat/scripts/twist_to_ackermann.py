@@ -27,26 +27,52 @@ class TwistToAckermann:
         self.min_turn_speed = abs(float(rospy.get_param("~min_turn_speed", 0.06)))
         self.angular_deadband = abs(float(rospy.get_param("~angular_deadband", 1e-3)))
         self.allow_rotate_crawl = bool(rospy.get_param("~allow_rotate_crawl", True))
+        self.angular_z_is_steering_angle = bool(
+            rospy.get_param("~angular_z_is_steering_angle", False)
+        )
 
         self.publisher = rospy.Publisher(self.output_topic, AckermannDriveStamped, queue_size=1)
         rospy.Subscriber(self.input_topic, Twist, self.callback, queue_size=1)
-        rospy.loginfo("twist_to_ackermann forwarding %s to %s", self.input_topic, self.output_topic)
+        rospy.loginfo(
+            "twist_to_ackermann forwarding %s to %s (%s)",
+            self.input_topic,
+            self.output_topic,
+            "angular.z as steering angle"
+            if self.angular_z_is_steering_angle
+            else "angular.z as yaw rate",
+        )
 
     def callback(self, message):
         speed = _clamp(message.linear.x, -self.max_speed, self.max_speed)
         yaw_rate = message.angular.z
 
         if abs(message.linear.y) > 1e-4:
-            rospy.logwarn_throttle(2.0, "Ignoring cmd_vel linear.y %.3f for Ackermann drive", message.linear.y)
+            rospy.logwarn_throttle(
+                2.0,
+                "Ignoring cmd_vel linear.y %.3f for Ackermann drive",
+                message.linear.y,
+            )
 
         steering = 0.0
-        if abs(speed) <= 1e-4:
+        if self.angular_z_is_steering_angle:
+            steering = _clamp(
+                message.angular.z,
+                -self.planner_max_steering_angle,
+                self.planner_max_steering_angle,
+            )
+            if abs(steering) <= self.angular_deadband:
+                steering = 0.0
+        elif abs(speed) <= 1e-4:
             if self.allow_rotate_crawl and abs(yaw_rate) > self.angular_deadband:
                 speed = self.min_turn_speed
             else:
                 yaw_rate = 0.0
 
-        if abs(speed) > 1e-4 and abs(yaw_rate) > self.angular_deadband:
+        if (
+            not self.angular_z_is_steering_angle
+            and abs(speed) > 1e-4
+            and abs(yaw_rate) > self.angular_deadband
+        ):
             steering = math.atan(self.wheelbase * yaw_rate / speed)
             steering = _clamp(
                 steering,

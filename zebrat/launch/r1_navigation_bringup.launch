@@ -52,13 +52,18 @@
   <arg name="cmd_vel_max_linear_accel" default="0.40"/>
   <arg name="cmd_vel_max_angular_accel" default="0.80"/>
   <arg name="cmd_vel_timeout" default="0.40"/>
+  <arg name="ackermann_wheelbase" default="0.41893"/>
   <arg name="ackermann_max_steering_angle" default="0.45"/>
   <arg name="ackermann_nav_max_steering_angle" default="0.35"/>
+  <arg
+    name="ackermann_effective_nav_steering_angle"
+    default="$(eval fabs(float(arg('ackermann_nav_max_steering_angle'))) if fabs(float(arg('ackermann_nav_max_steering_angle'))) &lt;= fabs(float(arg('ackermann_max_steering_angle'))) else fabs(float(arg('ackermann_max_steering_angle'))))"/>
   <arg name="ackermann_min_turn_speed" default="0.06"/>
   <arg name="enable_safety_supervisor" default="true"/>
   <arg name="safety_hard_stop_distance" default="0.25"/>
   <arg name="safety_slowdown_distance" default="0.65"/>
   <arg name="safety_front_angle" default="0.55"/>
+  <arg name="safety_rear_angle" default="0.55"/>
   <arg name="safety_reaction_time" default="0.25"/>
   <arg name="safety_ttc_stop_time" default="0.45"/>
   <arg name="safety_cancel_on_emergency" default="false"/>
@@ -103,11 +108,12 @@
     output="screen">
     <param name="input_topic" value="/cmd_vel_nav" />
     <param name="output_topic" value="/ackermann_cmd_nav" />
-    <param name="wheelbase" value="0.41893" />
+    <param name="wheelbase" value="$(arg ackermann_wheelbase)" />
     <param name="max_speed" value="$(arg cmd_vel_max_linear_x)" />
     <param name="max_steering_angle" value="$(arg ackermann_max_steering_angle)" />
-    <param name="planner_max_steering_angle" value="$(arg ackermann_nav_max_steering_angle)" />
+    <param name="planner_max_steering_angle" value="$(arg ackermann_effective_nav_steering_angle)" />
     <param name="min_turn_speed" value="$(arg ackermann_min_turn_speed)" />
+    <param name="angular_z_is_steering_angle" value="true" />
   </node>
 
   <node
@@ -134,6 +140,7 @@
     <param name="hard_stop_distance" value="$(arg safety_hard_stop_distance)" />
     <param name="slowdown_distance" value="$(arg safety_slowdown_distance)" />
     <param name="front_angle" value="$(arg safety_front_angle)" />
+    <param name="rear_angle" value="$(arg safety_rear_angle)" />
     <param name="reaction_time" value="$(arg safety_reaction_time)" />
     <param name="max_deceleration" value="$(arg cmd_vel_max_linear_accel)" />
     <param name="ttc_stop_time" value="$(arg safety_ttc_stop_time)" />
@@ -146,7 +153,7 @@
     type="r1_ackermann_controller.py"
     output="screen">
     <param name="input_topic" value="/ackermann_cmd" />
-    <param name="wheelbase" value="0.41893" />
+    <param name="wheelbase" value="$(arg ackermann_wheelbase)" />
     <param name="front_track" value="0.26462" />
     <param name="wheel_radius" value="0.04075" />
     <param name="max_speed" value="$(arg cmd_vel_max_linear_x)" />
@@ -277,14 +284,16 @@
       <rosparam command="load" file="$(find zebrat)/config/navigation_global_costmap.yaml" ns="move_base" />
       <rosparam command="load" file="$(find zebrat)/config/navigation_local_costmap.yaml" ns="move_base" />
       <rosparam command="load" file="$(find zebrat)/config/navigation_move_base.yaml" ns="move_base" />
-      <rosparam command="load" file="$(find zebrat)/config/navigation_dwa.yaml" ns="move_base" />
+      <rosparam command="load" file="$(find zebrat)/config/navigation_teb.yaml" ns="move_base" />
 
-      <param name="move_base/DWAPlannerROS/max_vel_x" value="$(arg cmd_vel_max_linear_x)" />
-      <param name="move_base/DWAPlannerROS/max_vel_trans" value="$(arg cmd_vel_max_linear_x)" />
-      <param name="move_base/DWAPlannerROS/max_vel_theta" value="$(arg cmd_vel_max_angular_z)" />
-      <param name="move_base/DWAPlannerROS/acc_lim_x" value="$(arg cmd_vel_max_linear_accel)" />
-      <param name="move_base/DWAPlannerROS/acc_lim_trans" value="$(arg cmd_vel_max_linear_accel)" />
-      <param name="move_base/DWAPlannerROS/acc_lim_theta" value="$(arg cmd_vel_max_angular_accel)" />
+      <param name="move_base/TebLocalPlannerROS/max_vel_x" value="$(arg cmd_vel_max_linear_x)" />
+      <param name="move_base/TebLocalPlannerROS/acc_lim_x" value="$(arg cmd_vel_max_linear_accel)" />
+      <param name="move_base/TebLocalPlannerROS/acc_lim_theta" value="$(arg cmd_vel_max_angular_accel)" />
+      <param name="move_base/TebLocalPlannerROS/cmd_angle_instead_rotvel" value="true" />
+      <param name="move_base/TebLocalPlannerROS/wheelbase" value="$(arg ackermann_wheelbase)" />
+      <param
+        name="move_base/TebLocalPlannerROS/min_turning_radius"
+        value="$(eval float(arg('ackermann_wheelbase')) / fabs(tan(float(arg('ackermann_effective_nav_steering_angle')))) if fabs(float(arg('ackermann_effective_nav_steering_angle'))) > 1e-3 else 1000000.0)" />
 
       <node
         name="move_base"

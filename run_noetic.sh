@@ -65,6 +65,7 @@ required_ros_packages=(
   gazebo_ros_control
   joint_state_controller
   position_controllers
+  teb_local_planner
   velocity_controllers
 )
 
@@ -78,7 +79,7 @@ done
 if [ "${#missing_ros_packages[@]}" -gt 0 ]; then
   echo "Missing required ROS packages: ${missing_ros_packages[*]}" >&2
   echo "Install them with:" >&2
-  echo "  sudo apt-get install ros-noetic-ackermann-msgs ros-noetic-effort-controllers ros-noetic-gazebo-ros-control ros-noetic-joint-state-controller ros-noetic-position-controllers ros-noetic-velocity-controllers" >&2
+  echo "  sudo apt-get install ros-noetic-ackermann-msgs ros-noetic-effort-controllers ros-noetic-gazebo-ros-control ros-noetic-joint-state-controller ros-noetic-position-controllers ros-noetic-teb-local-planner ros-noetic-velocity-controllers" >&2
   exit 1
 fi
 
