@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="world_name" default="$(find zebrat)/worlds/area.world" />
+  <arg name="navigation_backend" default="gmapping" />
+  <arg name="navigation_mode" default="map" />
+  <arg name="rtabmap_enable_ekf_odom" default="false" />
+  <arg name="rtabmap_delete_db_on_start" default="false" />
+  <arg name="map_file" default="$(find zebrat)/maps/area.yaml" />
+  <arg name="goal_set" default="regression" />
+  <arg name="gui" default="false" />
+  <arg name="rviz" default="false" />
+  <arg name="paused" default="false" />
+  <arg name="auto_unpause" default="true" />
+  <arg name="enable_dynamic_obstacles" default="false" />
+  <arg name="dynamic_obstacle_profile" default="area_mixed" />
+  <arg name="dynamic_obstacle_speed_scale" default="1.0" />
+  <arg name="save_map" default="false" />
+  <arg name="map_output_prefix" default="$(find zebrat)/maps/area" />
+  <arg name="continue_on_failure" default="false" />
+  <arg name="command_topic" default="/ackermann_cmd" />
+  <arg name="idle_command_timeout" default="20.0" />
+  <arg name="server_timeout" default="120.0" />
+  <arg name="startup_delay" default="12.0" />
+  <arg name="safe_goal_enabled" default="true" />
+  <arg name="safe_goal_wait_timeout" default="6.0" />
+  <arg name="safe_goal_search_radius" default="1.2" />
+  <arg name="safe_goal_search_step" default="0.10" />
+  <arg name="safe_goal_target_check_radius" default="0.35" />
+  <arg name="safe_goal_use_dynamic_routes" default="true" />
+  <arg name="safe_goal_dynamic_route_inflation" default="0.42" />
+  <arg name="safe_goal_accept_xy_on_adjusted" default="true" />
+  <arg name="safe_goal_adjusted_xy_tolerance" default="0.25" />
+  <arg name="enable_safety_supervisor" default="true" />
+  <arg name="safety_hard_stop_distance" default="0.25" />
+  <arg name="safety_slowdown_distance" default="0.65" />
+  <arg name="safety_ttc_stop_time" default="0.45" />
+  <arg name="x" default="1.95" />
+  <arg name="y" default="-1.65" />
+  <arg name="z" default="0.04075" />
+  <arg name="yaw" default="0.0" />
+
+  <include file="$(find zebrat)/launch/zebrat_with_world.launch">
+    <arg name="robot" value="r1" />
+    <arg name="world_name" value="$(arg world_name)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="paused" value="$(arg paused)" />
+    <arg name="auto_unpause" value="$(arg auto_unpause)" />
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="enable_navigation" value="true" />
+    <arg name="enable_dynamic_obstacles" value="$(arg enable_dynamic_obstacles)" />
+    <arg name="dynamic_obstacle_profile" value="$(arg dynamic_obstacle_profile)" />
+    <arg name="dynamic_obstacle_speed_scale" value="$(arg dynamic_obstacle_speed_scale)" />
+    <arg name="navigation_backend" value="$(arg navigation_backend)" />
+    <arg name="rtabmap_enable_ekf_odom" value="$(arg rtabmap_enable_ekf_odom)" />
+    <arg name="rtabmap_delete_db_on_start" value="$(arg rtabmap_delete_db_on_start)" />
+    <arg name="navigation_mode" value="$(arg navigation_mode)" />
+    <arg name="map_file" value="$(arg map_file)" />
+    <arg name="save_map" value="$(arg save_map)" />
+    <arg name="map_output_prefix" value="$(arg map_output_prefix)" />
+    <arg name="enable_safety_supervisor" value="$(arg enable_safety_supervisor)" />
+    <arg name="safety_hard_stop_distance" value="$(arg safety_hard_stop_distance)" />
+    <arg name="safety_slowdown_distance" value="$(arg safety_slowdown_distance)" />
+    <arg name="safety_ttc_stop_time" value="$(arg safety_ttc_stop_time)" />
+    <arg name="x" value="$(arg x)" />
+    <arg name="y" value="$(arg y)" />
+    <arg name="z" value="$(arg z)" />
+    <arg name="yaw" value="$(arg yaw)" />
+  </include>
+
+  <node
+    name="navigation_regression"
+    pkg="zebrat"
+    type="navigation_regression.py"
+    output="screen">
+    <rosparam command="load" file="$(find zebrat)/config/navigation_goals_area.yaml" />
+    <param name="goal_set" value="$(arg goal_set)" />
+    <param name="continue_on_failure" value="$(arg continue_on_failure)" />
+    <param name="command_topic" value="$(arg command_topic)" />
+    <param name="idle_command_timeout" value="$(arg idle_command_timeout)" />
+    <param name="server_timeout" value="$(arg server_timeout)" />
+    <param name="startup_delay" value="$(arg startup_delay)" />
+    <param name="safe_goal_enabled" value="$(arg safe_goal_enabled)" />
+    <param name="safe_goal_wait_timeout" value="$(arg safe_goal_wait_timeout)" />
+    <param name="safe_goal_search_radius" value="$(arg safe_goal_search_radius)" />
+    <param name="safe_goal_search_step" value="$(arg safe_goal_search_step)" />
+    <param name="safe_goal_target_check_radius" value="$(arg safe_goal_target_check_radius)" />
+    <param name="safe_goal_use_dynamic_routes" value="$(arg safe_goal_use_dynamic_routes)" />
+    <param name="safe_goal_dynamic_route_inflation" value="$(arg safe_goal_dynamic_route_inflation)" />
+    <param name="safe_goal_accept_xy_on_adjusted" value="$(arg safe_goal_accept_xy_on_adjusted)" />
+    <param name="safe_goal_adjusted_xy_tolerance" value="$(arg safe_goal_adjusted_xy_tolerance)" />
+  </node>
+</launch>
