@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import math
+import time
 
 import rospy
 from ackermann_msgs.msg import AckermannDriveStamped
@@ -30,17 +31,50 @@ class TwistToAckermann:
         self.angular_z_is_steering_angle = bool(
             rospy.get_param("~angular_z_is_steering_angle", False)
         )
+        self.steering_rate_limit = abs(float(rospy.get_param("~steering_rate_limit", 0.0)))
+        self.steering_deadband = abs(
+            float(rospy.get_param("~steering_deadband", self.angular_deadband))
+        )
+        self._last_steering = 0.0
+        self._last_steering_wall = None
 
         self.publisher = rospy.Publisher(self.output_topic, AckermannDriveStamped, queue_size=1)
         rospy.Subscriber(self.input_topic, Twist, self.callback, queue_size=1)
         rospy.loginfo(
-            "twist_to_ackermann forwarding %s to %s (%s)",
+            "twist_to_ackermann forwarding %s to %s (%s, steering rate limit %.2f rad/s)",
             self.input_topic,
             self.output_topic,
             "angular.z as steering angle"
             if self.angular_z_is_steering_angle
             else "angular.z as yaw rate",
+            self.steering_rate_limit,
         )
+
+    def _filter_steering(self, steering):
+        steering = _clamp(
+            steering,
+            -self.planner_max_steering_angle,
+            self.planner_max_steering_angle,
+        )
+        if abs(steering) <= self.steering_deadband:
+            steering = 0.0
+
+        now = time.monotonic()
+        if self.steering_rate_limit <= 1e-6 or self._last_steering_wall is None:
+            self._last_steering = steering
+            self._last_steering_wall = now
+            return steering
+
+        elapsed = max(0.0, now - self._last_steering_wall)
+        max_delta = self.steering_rate_limit * elapsed
+        steering = _clamp(
+            steering,
+            self._last_steering - max_delta,
+            self._last_steering + max_delta,
+        )
+        self._last_steering = steering
+        self._last_steering_wall = now
+        return steering
 
     def callback(self, message):
         speed = _clamp(message.linear.x, -self.max_speed, self.max_speed)
@@ -55,13 +89,7 @@ class TwistToAckermann:
 
         steering = 0.0
         if self.angular_z_is_steering_angle:
-            steering = _clamp(
-                message.angular.z,
-                -self.planner_max_steering_angle,
-                self.planner_max_steering_angle,
-            )
-            if abs(steering) <= self.angular_deadband:
-                steering = 0.0
+            steering = message.angular.z
         elif abs(speed) <= 1e-4:
             if self.allow_rotate_crawl and abs(yaw_rate) > self.angular_deadband:
                 speed = self.min_turn_speed
@@ -74,11 +102,8 @@ class TwistToAckermann:
             and abs(yaw_rate) > self.angular_deadband
         ):
             steering = math.atan(self.wheelbase * yaw_rate / speed)
-            steering = _clamp(
-                steering,
-                -self.planner_max_steering_angle,
-                self.planner_max_steering_angle,
-            )
+
+        steering = self._filter_steering(steering)
 
         command = AckermannDriveStamped()
         command.header.stamp = rospy.Time.now()

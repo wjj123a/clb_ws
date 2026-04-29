@@ -61,6 +61,8 @@
   <arg name="ackermann_max_steering_angle" default="0.45"/>
   <arg name="ackermann_nav_max_steering_angle" default="0.35"/>
   <arg name="ackermann_min_turn_speed" default="0.06"/>
+  <arg name="ackermann_steering_rate_limit" default="0.0"/>
+  <arg name="ackermann_steering_deadband" default="0.01"/>
   <arg name="enable_safety_supervisor" default="true"/>
   <arg name="safety_hard_stop_distance" default="0.25"/>
   <arg name="safety_slowdown_distance" default="0.65"/>
@@ -120,6 +122,8 @@
     <arg name="ackermann_max_steering_angle" value="$(arg ackermann_max_steering_angle)" />
     <arg name="ackermann_nav_max_steering_angle" value="$(arg ackermann_nav_max_steering_angle)" />
     <arg name="ackermann_min_turn_speed" value="$(arg ackermann_min_turn_speed)" />
+    <arg name="ackermann_steering_rate_limit" value="$(arg ackermann_steering_rate_limit)" />
+    <arg name="ackermann_steering_deadband" value="$(arg ackermann_steering_deadband)" />
     <arg name="enable_safety_supervisor" value="$(arg enable_safety_supervisor)" />
     <arg name="safety_hard_stop_distance" value="$(arg safety_hard_stop_distance)" />
     <arg name="safety_slowdown_distance" value="$(arg safety_slowdown_distance)" />

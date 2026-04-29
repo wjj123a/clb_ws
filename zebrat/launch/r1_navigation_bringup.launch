@@ -59,6 +59,8 @@
     name="ackermann_effective_nav_steering_angle"
     default="$(eval fabs(float(arg('ackermann_nav_max_steering_angle'))) if fabs(float(arg('ackermann_nav_max_steering_angle'))) &lt;= fabs(float(arg('ackermann_max_steering_angle'))) else fabs(float(arg('ackermann_max_steering_angle'))))"/>
   <arg name="ackermann_min_turn_speed" default="0.06"/>
+  <arg name="ackermann_steering_rate_limit" default="0.0"/>
+  <arg name="ackermann_steering_deadband" default="0.01"/>
   <arg name="enable_safety_supervisor" default="true"/>
   <arg name="safety_hard_stop_distance" default="0.25"/>
   <arg name="safety_slowdown_distance" default="0.65"/>
@@ -114,6 +116,8 @@
     <param name="planner_max_steering_angle" value="$(arg ackermann_effective_nav_steering_angle)" />
     <param name="min_turn_speed" value="$(arg ackermann_min_turn_speed)" />
     <param name="angular_z_is_steering_angle" value="true" />
+    <param name="steering_rate_limit" value="$(arg ackermann_steering_rate_limit)" />
+    <param name="steering_deadband" value="$(arg ackermann_steering_deadband)" />
   </node>
 
   <node
@@ -287,6 +291,7 @@
       <rosparam command="load" file="$(find zebrat)/config/navigation_teb.yaml" ns="move_base" />
 
       <param name="move_base/TebLocalPlannerROS/max_vel_x" value="$(arg cmd_vel_max_linear_x)" />
+      <param name="move_base/TebLocalPlannerROS/max_vel_theta" value="$(arg cmd_vel_max_angular_z)" />
       <param name="move_base/TebLocalPlannerROS/acc_lim_x" value="$(arg cmd_vel_max_linear_accel)" />
       <param name="move_base/TebLocalPlannerROS/acc_lim_theta" value="$(arg cmd_vel_max_angular_accel)" />
       <param name="move_base/TebLocalPlannerROS/cmd_angle_instead_rotvel" value="true" />

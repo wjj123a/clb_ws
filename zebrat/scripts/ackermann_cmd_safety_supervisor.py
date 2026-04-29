@@ -29,6 +29,16 @@ def _angle_in_sector(angle, center, half_width):
     return abs(_wrap_to_pi(angle - center)) <= half_width
 
 
+def _usable_range(message, value):
+    if math.isnan(value) or value <= 0.0:
+        return None
+    if math.isinf(value):
+        if value > 0.0 and math.isfinite(message.range_max) and message.range_max > 0.0:
+            return message.range_max
+        return None
+    return value
+
+
 class AckermannCmdSafetySupervisor:
     def __init__(self):
         self.input_topic = rospy.get_param("~input_topic", "/ackermann_cmd_safety_in")
@@ -80,13 +90,14 @@ class AckermannCmdSafetySupervisor:
         front_ranges = []
         rear_ranges = []
         for index, value in enumerate(message.ranges):
-            if not math.isfinite(value) or value <= 0.0:
+            usable = _usable_range(message, value)
+            if usable is None:
                 continue
             angle = message.angle_min + index * message.angle_increment
             if _angle_in_sector(angle, 0.0, self.front_angle):
-                front_ranges.append(value)
+                front_ranges.append(usable)
             if _angle_in_sector(angle, math.pi, self.rear_angle):
-                rear_ranges.append(value)
+                rear_ranges.append(usable)
 
         now = time.monotonic()
         current_front_min = min(front_ranges) if front_ranges else float("inf")
