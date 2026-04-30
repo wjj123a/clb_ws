@@ -12,10 +12,10 @@ local_costmap:
   track_unknown_space: false
   always_send_full_costmap: true
   footprint:
-    - [0.30, 0.18]
-    - [0.30, -0.18]
-    - [-0.30, -0.18]
-    - [-0.30, 0.18]
+    - [0.4988, 0.18]
+    - [0.4988, -0.18]
+    - [-0.1012, -0.18]
+    - [-0.1012, 0.18]
   footprint_padding: 0.02
   plugins:
     - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}

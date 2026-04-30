@@ -35,19 +35,30 @@ class TwistToAckermann:
         self.steering_deadband = abs(
             float(rospy.get_param("~steering_deadband", self.angular_deadband))
         )
+        self.steering_deadband_release = abs(
+            float(rospy.get_param("~steering_deadband_release", self.steering_deadband))
+        )
+        if self.steering_deadband_release < self.steering_deadband:
+            self.steering_deadband_release = self.steering_deadband
+        self._steering_deadband_active = False
         self._last_steering = 0.0
         self._last_steering_wall = None
 
         self.publisher = rospy.Publisher(self.output_topic, AckermannDriveStamped, queue_size=1)
         rospy.Subscriber(self.input_topic, Twist, self.callback, queue_size=1)
         rospy.loginfo(
-            "twist_to_ackermann forwarding %s to %s (%s, steering rate limit %.2f rad/s)",
+            (
+                "twist_to_ackermann forwarding %s to %s "
+                "(%s, steering rate limit %.2f rad/s, deadband %.3f/%.3f rad)"
+            ),
             self.input_topic,
             self.output_topic,
             "angular.z as steering angle"
             if self.angular_z_is_steering_angle
             else "angular.z as yaw rate",
             self.steering_rate_limit,
+            self.steering_deadband,
+            self.steering_deadband_release,
         )
 
     def _filter_steering(self, steering):
@@ -56,8 +67,16 @@ class TwistToAckermann:
             -self.planner_max_steering_angle,
             self.planner_max_steering_angle,
         )
-        if abs(steering) <= self.steering_deadband:
-            steering = 0.0
+        if self.steering_deadband > 1e-6:
+            steering_abs = abs(steering)
+            if self._steering_deadband_active:
+                if steering_abs < self.steering_deadband_release:
+                    steering = 0.0
+                else:
+                    self._steering_deadband_active = False
+            elif steering_abs <= self.steering_deadband:
+                steering = 0.0
+                self._steering_deadband_active = True
 
         now = time.monotonic()
         if self.steering_rate_limit <= 1e-6 or self._last_steering_wall is None:

@@ -38,7 +38,8 @@
   <arg name="ackermann_wheelbase" default="0.41893" />
   <arg name="ackermann_nav_max_steering_angle" default="0.35" />
   <arg name="ackermann_steering_rate_limit" default="0.0" />
-  <arg name="ackermann_steering_deadband" default="0.01" />
+  <arg name="ackermann_steering_deadband" default="0.06" />
+  <arg name="ackermann_steering_deadband_release" default="0.10" />
   <arg name="x" default="1.95" />
   <arg name="y" default="-1.65" />
   <arg name="z" default="0.04075" />
@@ -71,6 +72,7 @@
     <arg name="ackermann_nav_max_steering_angle" value="$(arg ackermann_nav_max_steering_angle)" />
     <arg name="ackermann_steering_rate_limit" value="$(arg ackermann_steering_rate_limit)" />
     <arg name="ackermann_steering_deadband" value="$(arg ackermann_steering_deadband)" />
+    <arg name="ackermann_steering_deadband_release" value="$(arg ackermann_steering_deadband_release)" />
     <arg name="x" value="$(arg x)" />
     <arg name="y" value="$(arg y)" />
     <arg name="z" value="$(arg z)" />

@@ -20,14 +20,14 @@
 
   <link name="base_link">
     <visual>
-      <origin xyz="0.02 0 0.17" rpy="0 0 0" />
+      <origin xyz="0.21879978611665 0 0.17" rpy="0 0 0" />
       <geometry>
         <box size="0.56 0.29 0.24" />
       </geometry>
       <material name="frame_white" />
     </visual>
     <visual>
-      <origin xyz="0.02 0 0.34" rpy="0 0 0" />
+      <origin xyz="0.21879978611665 0 0.34" rpy="0 0 0" />
       <geometry>
         <box size="0.48 0.25 0.10" />
       </geometry>
@@ -50,7 +50,7 @@
   </link>
 
   <joint name="front_left_steering_joint" type="revolute">
-    <origin xyz="0.220127909860013 0.132310316479216 0.04075" rpy="0 0 0" />
+    <origin xyz="0.418927695976663 0.132310316479216 0.04075" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="front_left_steering_link" />
     <axis xyz="0 0 1" />
@@ -75,7 +75,7 @@
   </link>
 
   <joint name="front_right_steering_joint" type="revolute">
-    <origin xyz="0.220127909860013 -0.132310316479216 0.04075" rpy="0 0 0" />
+    <origin xyz="0.418927695976663 -0.132310316479216 0.04075" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="front_right_steering_link" />
     <axis xyz="0 0 1" />
@@ -100,7 +100,7 @@
   </link>
 
   <joint name="rear_right_wheel_joint" type="continuous">
-    <origin xyz="-0.19879978611665 -0.120910316479219 0.0" rpy="0 0 0" />
+    <origin xyz="0.0 -0.120910316479219 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link3" />
     <axis xyz="0 -1 0" />
@@ -117,7 +117,7 @@
   </link>
 
   <joint name="rear_left_wheel_joint" type="continuous">
-    <origin xyz="-0.19879978611665 0.120910316479219 0.0" rpy="0 0 0" />
+    <origin xyz="0.0 0.120910316479219 0.0" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="Empty_Link4" />
     <axis xyz="0 1 0" />
@@ -134,7 +134,7 @@
   </link>
 
   <joint name="imu_joint" type="fixed">
-    <origin xyz="0.02 0 0.22" rpy="0 0 0" />
+    <origin xyz="0.21879978611665 0 0.22" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="imu_link" />
   </joint>
@@ -150,7 +150,7 @@
   </link>
 
   <joint name="laser_joint" type="fixed">
-    <origin xyz="0.34 0 0.36" rpy="0 0 0" />
+    <origin xyz="0.53879978611665 0 0.36" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="laser_link" />
   </joint>
@@ -166,7 +166,7 @@
   </link>
 
   <joint name="camera_joint" type="fixed">
-    <origin xyz="0.30 0 0.28" rpy="0 0 0" />
+    <origin xyz="0.49879978611665 0 0.28" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="camera_link" />
   </joint>
