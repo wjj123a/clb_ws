@@ -46,12 +46,12 @@
   <arg name="y" default="$(eval 0.0 if arg('world_profile') in ['empty', 'racecar', 'custom'] else -1.65 if arg('world_profile') == 'area' else 0.0 if arg('world_profile') == 'empty_wall' else 1.5 if arg('world_profile') == 'wall_right_angle' else -1.0 if arg('world_profile') == 'racecar_ar' else -1.5 if arg('world_profile') == 'racecar_cones' else -1.5 if arg('world_profile') == 'racecar_parking_1' else 0.0 if arg('world_profile') == 'racecar_tunnel' else 0.0 if arg('world_profile') == 'racecar_walker' else -2.0 if arg('world_profile') == 'racetrack' else 0.0)"/>
   <arg name="z" default="0.04075"/>
   <arg name="yaw" default="$(eval 0.0 if arg('world_profile') not in ['racecar_parking_1'] else 1.57)"/>
-  <arg name="cmd_vel_max_linear_x" default="0.22"/>
-  <arg name="cmd_vel_max_linear_x_backwards" default="0.04"/>
+  <arg name="cmd_vel_max_linear_x" default="0.30"/>
+  <arg name="cmd_vel_max_linear_x_backwards" default="0.08"/>
   <arg name="cmd_vel_max_linear_y" default="0.0"/>
-  <arg name="cmd_vel_max_angular_z" default="0.12"/>
-  <arg name="cmd_vel_max_linear_accel" default="0.40"/>
-  <arg name="cmd_vel_max_angular_accel" default="0.50"/>
+  <arg name="cmd_vel_max_angular_z" default="0.14"/>
+  <arg name="cmd_vel_max_linear_accel" default="0.60"/>
+  <arg name="cmd_vel_max_angular_accel" default="0.70"/>
   <arg name="cmd_vel_timeout" default="0.40"/>
   <arg name="ackermann_wheelbase" default="0.41893"/>
   <arg name="ackermann_max_steering_angle" default="0.45"/>
@@ -72,7 +72,7 @@
   <arg name="ackermann_local_plan_timeout" default="0.50"/>
   <arg name="ackermann_min_forward_tracking_speed" default="0.05"/>
   <arg name="teb_allow_init_with_backwards_motion" default="false"/>
-  <arg name="teb_weight_kinematics_forward_drive" default="150.0"/>
+  <arg name="teb_weight_kinematics_forward_drive" default="250.0"/>
   <arg name="enable_safety_supervisor" default="true"/>
   <arg name="safety_hard_stop_distance" default="0.25"/>
   <arg name="safety_slowdown_distance" default="0.65"/>

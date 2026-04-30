@@ -51,12 +51,12 @@
   <arg name="map_file" default="$(find zebrat)/maps/area.yaml"/>
   <arg name="save_map" default="false"/>
   <arg name="map_output_prefix" default="$(find zebrat)/maps/$(arg world_profile)"/>
-  <arg name="cmd_vel_max_linear_x" default="0.22"/>
-  <arg name="cmd_vel_max_linear_x_backwards" default="0.04"/>
+  <arg name="cmd_vel_max_linear_x" default="0.30"/>
+  <arg name="cmd_vel_max_linear_x_backwards" default="0.08"/>
   <arg name="cmd_vel_max_linear_y" default="0.0"/>
-  <arg name="cmd_vel_max_angular_z" default="0.12"/>
-  <arg name="cmd_vel_max_linear_accel" default="0.40"/>
-  <arg name="cmd_vel_max_angular_accel" default="0.50"/>
+  <arg name="cmd_vel_max_angular_z" default="0.14"/>
+  <arg name="cmd_vel_max_linear_accel" default="0.60"/>
+  <arg name="cmd_vel_max_angular_accel" default="0.70"/>
   <arg name="cmd_vel_timeout" default="0.40"/>
   <arg name="ackermann_wheelbase" default="0.41893"/>
   <arg name="ackermann_max_steering_angle" default="0.45"/>
@@ -74,7 +74,7 @@
   <arg name="ackermann_local_plan_timeout" default="0.50"/>
   <arg name="ackermann_min_forward_tracking_speed" default="0.05"/>
   <arg name="teb_allow_init_with_backwards_motion" default="false"/>
-  <arg name="teb_weight_kinematics_forward_drive" default="150.0"/>
+  <arg name="teb_weight_kinematics_forward_drive" default="250.0"/>
   <arg name="enable_safety_supervisor" default="true"/>
   <arg name="safety_hard_stop_distance" default="0.25"/>
   <arg name="safety_slowdown_distance" default="0.65"/>

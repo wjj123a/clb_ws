@@ -48,9 +48,13 @@
   <arg name="ackermann_path_lookahead_max" default="1.20" />
   <arg name="ackermann_local_plan_timeout" default="0.50" />
   <arg name="ackermann_min_forward_tracking_speed" default="0.05" />
-  <arg name="cmd_vel_max_linear_x_backwards" default="0.04" />
+  <arg name="cmd_vel_max_linear_x" default="0.30" />
+  <arg name="cmd_vel_max_linear_x_backwards" default="0.08" />
+  <arg name="cmd_vel_max_angular_z" default="0.14" />
+  <arg name="cmd_vel_max_linear_accel" default="0.60" />
+  <arg name="cmd_vel_max_angular_accel" default="0.70" />
   <arg name="teb_allow_init_with_backwards_motion" default="false" />
-  <arg name="teb_weight_kinematics_forward_drive" default="150.0" />
+  <arg name="teb_weight_kinematics_forward_drive" default="250.0" />
   <arg name="x" default="1.95" />
   <arg name="y" default="-1.65" />
   <arg name="z" default="0.04075" />
@@ -92,7 +96,11 @@
     <arg name="ackermann_path_lookahead_max" value="$(arg ackermann_path_lookahead_max)" />
     <arg name="ackermann_local_plan_timeout" value="$(arg ackermann_local_plan_timeout)" />
     <arg name="ackermann_min_forward_tracking_speed" value="$(arg ackermann_min_forward_tracking_speed)" />
+    <arg name="cmd_vel_max_linear_x" value="$(arg cmd_vel_max_linear_x)" />
     <arg name="cmd_vel_max_linear_x_backwards" value="$(arg cmd_vel_max_linear_x_backwards)" />
+    <arg name="cmd_vel_max_angular_z" value="$(arg cmd_vel_max_angular_z)" />
+    <arg name="cmd_vel_max_linear_accel" value="$(arg cmd_vel_max_linear_accel)" />
+    <arg name="cmd_vel_max_angular_accel" value="$(arg cmd_vel_max_angular_accel)" />
     <arg name="teb_allow_init_with_backwards_motion" value="$(arg teb_allow_init_with_backwards_motion)" />
     <arg name="teb_weight_kinematics_forward_drive" value="$(arg teb_weight_kinematics_forward_drive)" />
     <arg name="x" value="$(arg x)" />
