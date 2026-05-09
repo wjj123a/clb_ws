@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="cone">
+    <static>true</static>
+    <link name="link">
+      <pose>0 0 0.1750 0 0 0</pose>
+      <collision name="collision">
+        <geometry><box><size>0.25 0.25 0.35</size></box></geometry>
+      </collision>
+      <visual name="visual">
+        <geometry><box><size>0.25 0.25 0.35</size></box></geometry>
+        <material>
+          <ambient>1.0 0.45 0.1 1.0</ambient>
+          <diffuse>1.0 0.45 0.1 1.0</diffuse>
+        </material>
+      </visual>
+    </link>
+  </model>
+</sdf>

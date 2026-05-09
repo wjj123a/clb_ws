@@ -1,0 +1,13 @@
+material GasStation/Diffuse
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9000 0.2000 0.1600 1.0000
+      diffuse 0.9000 0.2000 0.1600 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

@@ -1,0 +1,13 @@
+material RoboCup/Net
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9500 0.9500 0.9500 1.0000
+      diffuse 0.9500 0.9500 0.9500 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

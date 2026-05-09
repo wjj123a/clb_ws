@@ -1,0 +1,13 @@
+material House_3/Diffuse
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.8500 0.7800 0.6600 1.0000
+      diffuse 0.8500 0.7800 0.6600 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

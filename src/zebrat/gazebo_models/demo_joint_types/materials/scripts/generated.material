@@ -1,0 +1,55 @@
+material demo_joint_types/child
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.1800 0.4600 0.9000 1.0000
+      diffuse 0.1800 0.4600 0.9000 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}
+
+material demo_joint_types/legend
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9400 0.9400 0.9400 1.0000
+      diffuse 0.9400 0.9400 0.9400 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}
+
+material demo_joint_types/parent
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9600 0.6400 0.1400 1.0000
+      diffuse 0.9600 0.6400 0.1400 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}
+
+material demo_joint_types/reference
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.9000 0.2400 0.1600 1.0000
+      diffuse 0.9000 0.2400 0.1600 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

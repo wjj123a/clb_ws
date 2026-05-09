@@ -1,0 +1,13 @@
+material FastFood/Diffuse
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.8200 0.1800 0.1400 1.0000
+      diffuse 0.8200 0.1800 0.1400 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

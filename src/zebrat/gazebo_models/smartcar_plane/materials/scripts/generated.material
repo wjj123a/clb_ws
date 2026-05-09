@@ -1,0 +1,13 @@
+material SmartcarPlane/Image
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.1600 0.1600 0.1800 1.0000
+      diffuse 0.1600 0.1600 0.1800 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

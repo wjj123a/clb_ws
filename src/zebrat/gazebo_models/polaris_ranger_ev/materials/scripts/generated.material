@@ -1,0 +1,41 @@
+material FNR_switch_F
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.1400 0.5600 0.1400 1.0000
+      diffuse 0.1400 0.5600 0.1400 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}
+
+material FNR_switch_R
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.7400 0.1600 0.1400 1.0000
+      diffuse 0.7400 0.1600 0.1400 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}
+
+material Polaris/Diffuse
+{
+  technique
+  {
+    pass
+    {
+      ambient 0.2200 0.4200 0.2200 1.0000
+      diffuse 0.2200 0.4200 0.2200 1.0000
+      specular 0.0800 0.0800 0.0800 1 8
+      emissive 0 0 0 1
+    }
+  }
+}

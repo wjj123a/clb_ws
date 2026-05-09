@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<sdf version="1.6">
+  <model name="walker_racecourse">
+    <static>true</static>
+    <link name="wall_a">
+      <pose>0 -1.8 0.5 0 0 0</pose>
+      <collision name="collision"><geometry><box><size>10 0.2 1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>10 0.2 1</size></box></geometry></visual>
+    </link>
+    <link name="wall_b">
+      <pose>0 1.8 0.5 0 0 0</pose>
+      <collision name="collision"><geometry><box><size>10 0.2 1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>10 0.2 1</size></box></geometry></visual>
+    </link>
+    <link name="barrier">
+      <pose>1.5 0 0.5 0 0 0.6</pose>
+      <collision name="collision"><geometry><box><size>0.4 2.0 1</size></box></geometry></collision>
+      <visual name="visual"><geometry><box><size>0.4 2.0 1</size></box></geometry></visual>
+    </link>
+  </model>
+</sdf>

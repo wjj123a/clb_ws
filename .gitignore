@@ -1,17 +1,20 @@
+# ROS / colcon build artifacts
 build/
-devel/
-logs/
+install/
+log/
+
+# Python cache and test artifacts
 __pycache__/
-*.pyc
-src/r1/
-src/zebrat/
-src/slam_gmapping/
-src/openslam_gmapping/
-zebrat/gazebo_models/
-zebrat/maps/*.pgm
-zebrat/maps/*.yaml
-!zebrat/maps/README.md
-zebrat/maps/rtabmap/*.db
-zebrat/maps/rtabmap/*.db-*
-!zebrat/maps/rtabmap/.gitkeep
-*:Zone.Identifier
+*.py[cod]
+.pytest_cache/
+
+# Local editor and runtime state
+.vscode/
+.idea/
+.ros/
+.gz/
+
+# Generated maps and bags
+*.bag
+*.db3
+*.mcap
