@@ -14,6 +14,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     pkg_share = get_package_share_directory("zebrat")
+    nav2_bt_share = get_package_share_directory("nav2_bt_navigator")
     world = LaunchConfiguration("world")
     gui = LaunchConfiguration("gui")
     rviz = LaunchConfiguration("rviz")
@@ -26,6 +27,9 @@ def generate_launch_description():
     ackermann_publish_odom = LaunchConfiguration("ackermann_publish_odom")
     ackermann_publish_tf = LaunchConfiguration("ackermann_publish_tf")
     ackermann_odom_topic = LaunchConfiguration("ackermann_odom_topic")
+    default_nav_to_pose_bt_xml = os.path.join(
+        nav2_bt_share, "behavior_trees", "navigate_to_pose_w_replanning_and_recovery.xml"
+    )
 
     lifecycle_nodes = [
         "map_server",
@@ -123,7 +127,10 @@ def generate_launch_description():
             executable="bt_navigator",
             name="bt_navigator",
             output="screen",
-            parameters=[params_file],
+            parameters=[
+                params_file,
+                {"default_nav_to_pose_bt_xml": default_nav_to_pose_bt_xml},
+            ],
         ),
         Node(
             package="nav2_lifecycle_manager",
@@ -240,19 +247,18 @@ def generate_launch_description():
                 default_value="/odom",
                 description="Pass-through for sim_control Ackermann odometry topic",
             ),
-            rviz_node,
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(os.path.join(pkg_share, "launch", "sim_control.launch.py")),
                 launch_arguments={
                     "world": world,
                     "gui": gui,
-                    "rviz": "false",
+                    "sim_rviz": "false",
                     "controller_start_delay": controller_start_delay,
                     "ackermann_publish_odom": ackermann_publish_odom,
                     "ackermann_publish_tf": ackermann_publish_tf,
                     "ackermann_odom_topic": ackermann_odom_topic,
                 }.items(),
             ),
-            TimerAction(period=nav2_start_delay, actions=nav2_nodes),
+            TimerAction(period=nav2_start_delay, actions=[rviz_node, *nav2_nodes]),
         ]
     )

@@ -41,6 +41,11 @@ class R1AckermannController(Node):
         self.declare_parameter("command_timeout", 0.45)
         self.declare_parameter("publish_rate", 50.0)
         self.declare_parameter("hold_steering_on_timeout", False)
+        self.declare_parameter("max_acceleration", 0.45)
+        self.declare_parameter("max_deceleration", 1.0)
+        self.declare_parameter("max_steering_rate", 1.5)
+        self.declare_parameter("speed_deadband", 0.003)
+        self.declare_parameter("steering_deadband", 0.01)
         self.declare_parameter("left_wheel_speed_sign", 1.0)
         self.declare_parameter("right_wheel_speed_sign", -1.0)
         self.declare_parameter("left_steering_sign", 1.0)
@@ -59,6 +64,11 @@ class R1AckermannController(Node):
         self.max_steering_angle = abs(float(self.get_parameter("max_steering_angle").value))
         self.command_timeout = float(self.get_parameter("command_timeout").value)
         self.hold_steering_on_timeout = bool(self.get_parameter("hold_steering_on_timeout").value)
+        self.max_acceleration = abs(float(self.get_parameter("max_acceleration").value))
+        self.max_deceleration = abs(float(self.get_parameter("max_deceleration").value))
+        self.max_steering_rate = abs(float(self.get_parameter("max_steering_rate").value))
+        self.speed_deadband = abs(float(self.get_parameter("speed_deadband").value))
+        self.steering_deadband = abs(float(self.get_parameter("steering_deadband").value))
         self.left_wheel_sign = float(self.get_parameter("left_wheel_speed_sign").value)
         self.right_wheel_sign = float(self.get_parameter("right_wheel_speed_sign").value)
         self.left_steering_sign = float(self.get_parameter("left_steering_sign").value)
@@ -72,6 +82,8 @@ class R1AckermannController(Node):
         self._last_command = AckermannDriveStamped()
         self._last_command_wall = 0.0
         self._last_update_wall = time.monotonic()
+        self._commanded_speed = 0.0
+        self._commanded_steering = 0.0
         self._x = 0.0
         self._y = 0.0
         self._yaw = 0.0
@@ -99,6 +111,31 @@ class R1AckermannController(Node):
             self._last_command = message
             self._last_command_wall = time.monotonic()
 
+    def _rate_limit(self, current, target, rate, dt):
+        if dt <= 0.0:
+            return current
+        delta = target - current
+        max_delta = max(rate, 0.0) * dt
+        return current + _clamp(delta, -max_delta, max_delta)
+
+    def _speed_rate_limit(self, current, target, dt):
+        rate = self.max_acceleration
+        same_direction = current == 0.0 or target == 0.0 or math.copysign(1.0, current) == math.copysign(1.0, target)
+        if same_direction and abs(target) < abs(current):
+            rate = self.max_deceleration
+        return self._rate_limit(current, target, rate, dt)
+
+    def _target_speed_steering(self, command, fresh):
+        speed = _clamp(command.drive.speed, -self.max_speed, self.max_speed) if fresh else 0.0
+        steering = _clamp(command.drive.steering_angle, -self.max_steering_angle, self.max_steering_angle)
+        if not fresh and not self.hold_steering_on_timeout:
+            steering = 0.0
+        if abs(speed) < self.speed_deadband:
+            speed = 0.0
+        if abs(steering) < self.steering_deadband:
+            steering = 0.0
+        return speed, steering
+
     def _front_wheel_angle(self, rear_center_radius, lateral_offset):
         angle = math.atan2(self.wheelbase, rear_center_radius - lateral_offset)
         if angle > math.pi / 2.0:
@@ -114,12 +151,7 @@ class R1AckermannController(Node):
         path_radius = math.hypot(self.wheelbase, rear_center_radius - lateral_offset)
         return _signed(yaw_rate * path_radius, speed)
 
-    def _targets_from_command(self, command, fresh):
-        speed = _clamp(command.drive.speed, -self.max_speed, self.max_speed) if fresh else 0.0
-        steering = _clamp(command.drive.steering_angle, -self.max_steering_angle, self.max_steering_angle)
-        if not fresh and not self.hold_steering_on_timeout:
-            steering = 0.0
-
+    def _targets_from_speed_steering(self, speed, steering):
         if abs(steering) <= 1e-5:
             left_steering = 0.0
             right_steering = 0.0
@@ -147,12 +179,21 @@ class R1AckermannController(Node):
 
     def _timer_callback(self):
         now_wall = time.monotonic()
+        dt = max(0.0, min(now_wall - self._last_update_wall, 0.1))
+        self._last_update_wall = now_wall
+
         with self._lock:
             command = self._last_command
             fresh = self._last_command_wall > 0.0 and now_wall - self._last_command_wall <= self.command_timeout
 
-        left_steering, right_steering, left_wheel, right_wheel, speed, steering = self._targets_from_command(
-            command, fresh
+        target_speed, target_steering = self._target_speed_steering(command, fresh)
+        self._commanded_speed = self._speed_rate_limit(self._commanded_speed, target_speed, dt)
+        self._commanded_steering = self._rate_limit(
+            self._commanded_steering, target_steering, self.max_steering_rate, dt
+        )
+
+        left_steering, right_steering, left_wheel, right_wheel, speed, steering = (
+            self._targets_from_speed_steering(self._commanded_speed, self._commanded_steering)
         )
         steering_msg = Float64MultiArray()
         steering_msg.data = [left_steering, right_steering]
@@ -161,8 +202,6 @@ class R1AckermannController(Node):
         self._steering_pub.publish(steering_msg)
         self._wheel_pub.publish(wheel_msg)
 
-        dt = max(0.0, min(now_wall - self._last_update_wall, 0.1))
-        self._last_update_wall = now_wall
         self._integrate_and_publish_odom(speed, steering, dt)
 
     def _integrate_and_publish_odom(self, speed, steering, dt):

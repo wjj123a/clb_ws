@@ -240,7 +240,7 @@
   </link>
 
   <joint name="laser_joint" type="fixed">
-    <origin xyz="0.53879978611665 0 0.36" rpy="0 0 0" />
+    <origin xyz="0.62 0 0.55" rpy="0 0 0" />
     <parent link="base_link" />
     <child link="laser_link" />
   </joint>
@@ -346,7 +346,7 @@
           </horizontal>
         </scan>
         <range>
-          <min>0.12</min>
+          <min>0.18</min>
           <max>8.0</max>
           <resolution>0.01</resolution>
         </range>
@@ -368,6 +368,25 @@
   </gazebo>
 
   <gazebo reference="camera_link">
+    <sensor name="front_rgb_camera" type="camera">
+      <always_on>true</always_on>
+      <update_rate>15.0</update_rate>
+      <visualize>false</visualize>
+      <topic>/camera/rgb/image_raw</topic>
+      <camera>
+        <camera_info_topic>/camera/rgb/camera_info</camera_info_topic>
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.05</near>
+          <far>20.0</far>
+        </clip>
+      </camera>
+    </sensor>
     <sensor name="front_camera" type="depth_camera">
       <always_on>true</always_on>
       <update_rate>15.0</update_rate>

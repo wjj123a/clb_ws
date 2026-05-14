@@ -22,7 +22,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 def _launch_setup(context, *_args, **_kwargs):
     pkg_share = get_package_share_directory("zebrat")
     world_name = LaunchConfiguration("world").perform(context)
-    rviz_enabled = LaunchConfiguration("rviz")
+    rviz_enabled = LaunchConfiguration("sim_rviz")
     controller_start_delay = LaunchConfiguration("controller_start_delay")
     ackermann_publish_odom = LaunchConfiguration("ackermann_publish_odom")
     ackermann_publish_tf = LaunchConfiguration("ackermann_publish_tf")
@@ -134,6 +134,8 @@ def _launch_setup(context, *_args, **_kwargs):
                 "/world/default/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock",
                 "/scan@sensor_msgs/msg/LaserScan[gz.msgs.LaserScan",
                 "/imu/data@sensor_msgs/msg/Imu[gz.msgs.IMU",
+                "/camera/rgb/image_raw@sensor_msgs/msg/Image[gz.msgs.Image",
+                "/camera/rgb/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
                 "/camera/depth/image_raw@sensor_msgs/msg/Image[gz.msgs.Image",
                 "/camera/depth/camera_info@sensor_msgs/msg/CameraInfo[gz.msgs.CameraInfo",
             ],
@@ -143,17 +145,56 @@ def _launch_setup(context, *_args, **_kwargs):
             ],
         ),
         Node(
+            package="zebrat",
+            executable="front_camera_compat_relay.py",
+            name="front_camera_compat_relay",
+            output="screen",
+            parameters=[
+                {
+                    "use_sim_time": True,
+                    "frame_id": "camera_optical_link",
+                    "depth_image_in": "/camera/depth/image_raw",
+                    "depth_info_in": "/camera/camera_info",
+                    "rgb_image_in": "/camera/rgb/image_raw",
+                    "rgb_info_in": "/camera/rgb/camera_info",
+                    "depth_image_out": "/front_camera/depth/image_raw",
+                    "depth_viz_out": "/front_camera/depth/image_viz",
+                    "depth_info_out": "/front_camera/depth/camera_info",
+                    "rgb_image_out": "/front_camera/rgb/image_raw",
+                    "rgb_info_out": "/front_camera/rgb/camera_info",
+                }
+            ],
+        ),
+        Node(
+            package="zebrat",
+            executable="depth_to_pointcloud.py",
+            name="front_camera_depth_to_points",
+            output="screen",
+            parameters=[
+                {
+                    "use_sim_time": True,
+                    "depth_topic": "/front_camera/depth/image_raw",
+                    "camera_info_topic": "/front_camera/depth/camera_info",
+                    "points_topic": "/front_camera/depth/points",
+                    "frame_id": "camera_optical_link",
+                    "downsample": 4,
+                    "min_depth": 0.10,
+                    "max_depth": 8.0,
+                }
+            ],
+        ),
+        Node(
             package="tf2_ros",
             executable="static_transform_publisher",
             name="front_laser_frame",
             output="screen",
             arguments=[
                 "--x",
-                "0.53879978611665",
+                "0.62",
                 "--y",
                 "0.0",
                 "--z",
-                "0.36",
+                "0.55",
                 "--roll",
                 "0.0",
                 "--pitch",
@@ -280,6 +321,11 @@ def generate_launch_description():
         [
             DeclareLaunchArgument("world", default_value="area", description="World name from zebrat/worlds"),
             DeclareLaunchArgument("rviz", default_value="true", description="Start RViz"),
+            DeclareLaunchArgument(
+                "sim_rviz",
+                default_value=LaunchConfiguration("rviz"),
+                description="Start the sim_control RViz instance",
+            ),
             DeclareLaunchArgument("gui", default_value="true", description="Start Gazebo GUI"),
             DeclareLaunchArgument(
                 "controller_start_delay",

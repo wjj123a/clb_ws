@@ -16,6 +16,10 @@ def generate_launch_description():
     rviz = LaunchConfiguration("rviz")
     nav2_start_delay = LaunchConfiguration("nav2_start_delay")
     controller_start_delay = LaunchConfiguration("controller_start_delay")
+    rtabmap = LaunchConfiguration("rtabmap")
+    rtabmap_start_delay = LaunchConfiguration("rtabmap_start_delay")
+    rtabmap_database_path = LaunchConfiguration("rtabmap_database_path")
+    rtabmap_delete_db_on_start = LaunchConfiguration("rtabmap_delete_db_on_start")
 
     ekf_config = os.path.join(pkg_share, "config", "ekf_area_full.yaml")
 
@@ -25,13 +29,29 @@ def generate_launch_description():
             DeclareLaunchArgument("rviz", default_value="true", description="Start RViz"),
             DeclareLaunchArgument(
                 "nav2_start_delay",
-                default_value="60.0",
+                default_value="0.0",
                 description="Seconds to wait before starting Nav2 nodes",
             ),
             DeclareLaunchArgument(
                 "controller_start_delay",
-                default_value="30.0",
+                default_value="0.0",
                 description="Seconds to wait before spawning ros2_control controllers",
+            ),
+            DeclareLaunchArgument("rtabmap", default_value="false", description="Start RGBD RTAB-Map"),
+            DeclareLaunchArgument(
+                "rtabmap_start_delay",
+                default_value="0.0",
+                description="Seconds to wait before starting RGBD RTAB-Map",
+            ),
+            DeclareLaunchArgument(
+                "rtabmap_database_path",
+                default_value="~/.ros/rtabmap/area_full_jazzy.db",
+                description="RTAB-Map database path",
+            ),
+            DeclareLaunchArgument(
+                "rtabmap_delete_db_on_start",
+                default_value="false",
+                description="Delete RTAB-Map database at startup",
             ),
             Node(
                 package="zebrat",
@@ -70,6 +90,15 @@ def generate_launch_description():
                     "ackermann_publish_odom": "false",
                     "ackermann_publish_tf": "false",
                     "ackermann_odom_topic": "/ackermann/odom",
+                }.items(),
+            ),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(os.path.join(pkg_share, "launch", "rtabmap_rgbd.launch.py")),
+                launch_arguments={
+                    "enabled": rtabmap,
+                    "start_delay": rtabmap_start_delay,
+                    "database_path": rtabmap_database_path,
+                    "delete_db_on_start": rtabmap_delete_db_on_start,
                 }.items(),
             ),
         ]

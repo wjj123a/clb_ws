@@ -6,6 +6,7 @@ find_package(ament_cmake REQUIRED)
 install(
   DIRECTORY
     config
+    behavior_trees
     gazebo_models
     launch
     maps
@@ -20,6 +21,8 @@ install(
   PROGRAMS
     scripts/ackermann_cmd_arbiter.py
     scripts/ackermann_cmd_safety_supervisor.py
+    scripts/depth_to_pointcloud.py
+    scripts/front_camera_compat_relay.py
     scripts/gazebo_auto_unpause.py
     scripts/gazebo_odometry.py
     scripts/keyboard_ackermann_teleop.py

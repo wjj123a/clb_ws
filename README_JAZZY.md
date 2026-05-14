@@ -1,8 +1,9 @@
 # ZebraT ROS 2 Jazzy workspace
 
 This workspace is the ROS 2 / Gazebo Harmonic migration of the ROS 1 Noetic
-`clb_ws` simulator. The first working target is Gazebo + RViz + Ackermann
-control for the R1 robot.
+`clb_ws` simulator. The current default entry starts the full `area_full`
+Gazebo scene, RViz, Nav2, the Ackermann control chain, and the RGBD/RTAB-Map
+debug chain for the R1 robot.
 
 ## Build
 
@@ -15,16 +16,28 @@ source install/setup.bash
 
 ## Run
 
+The convenience script is the recommended default entry. It sources Jazzy,
+builds the workspace, and launches the
+full navigation scene with both Gazebo GUI and RViz enabled by default. RTAB-Map
+is disabled in the convenience entry so the static-map navigation baseline is
+quiet and easier to validate:
+
 ```bash
-cd /home/k/clb_ws_jazzy
-bash run_jazzy.sh world:=area rviz:=true
+/home/k/clb_ws_jazzy/run_jazzy.sh
 ```
 
-For headless Gazebo:
+This is equivalent to launching `zebrat nav2_area_full.launch.py` with
+`gui:=true`, `rviz:=true`, `rtabmap:=false`, `controller_start_delay:=6.0`,
+and `nav2_start_delay:=14.0`. You can still override those launch arguments:
 
 ```bash
-bash run_jazzy.sh world:=area rviz:=false gui:=false
+/home/k/clb_ws_jazzy/run_jazzy.sh gui:=false rviz:=false
+/home/k/clb_ws_jazzy/run_jazzy.sh rtabmap:=true
+/home/k/clb_ws_jazzy/run_jazzy.sh nav2_start_delay:=0 controller_start_delay:=0
 ```
+
+For the lower-level Ackermann-only simulation bringup, launch
+`sim_control.launch.py` directly.
 
 ## Command The Robot
 
@@ -69,31 +82,48 @@ Nav2 /cmd_vel -> /ackermann_cmd_nav -> /ackermann_cmd_safety_in -> /ackermann_cm
 ```
 
 `/scan` and `/imu/data` are bridged from Gazebo; `/camera/depth/image_raw` and
-`/camera/camera_info` are also available. The first Nav2 map keeps the global
-costmap static and uses the laser in the local costmap, which is more stable for
-the small simplified test world. The planner is `SmacPlannerHybrid` and the
-controller is MPPI.
+`/camera/camera_info` are also available, with ROS1-style compatibility aliases
+at `/front_camera/depth/image_raw` and `/front_camera/depth/camera_info`. The
+first Nav2 map keeps the global costmap static and uses the laser in the local
+costmap, which is more stable for the small simplified test world. The planner
+is `SmacPlannerHybrid` and the controller is MPPI.
 
 ## Full Area Scene
 
 The fuller Harmonic scene is migrated from the static parts of the old
 `area_classic.world`. It keeps the simplified `area.world` untouched and uses a
-separate map and Nav2 params file. The full scene keeps `SmacPlannerHybrid` for
-global planning and uses Regulated Pure Pursuit for the first stable navigation
-smoke test; `/cmd_vel` still flows through the Ackermann adapter and safety
-supervisor.
+separate map and Nav2 params file. This default full-scene entry now uses the
+ROS1-style fusion chain: wheel odometry plus IMU through `robot_localization`,
+with AMCL publishing `map->odom`. `/cmd_vel` still flows through the Ackermann
+adapter and safety supervisor. The full-scene Nav2 stack uses
+`SmacPlannerHybrid` with a forward-only Dubins search model and an Ackermann
+`MPPIController` for local control.
 
 ```bash
 cd /home/k/clb_ws_jazzy
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-ros2 launch zebrat nav2_area_full.launch.py rviz:=true
+ros2 launch zebrat nav2_area_full.launch.py gui:=true rviz:=true controller_start_delay:=6 nav2_start_delay:=14
+```
+
+The same entry is available through the convenience script:
+
+```bash
+bash run_jazzy.sh
 ```
 
 Headless validation:
 
 ```bash
-ros2 launch zebrat nav2_area_full.launch.py gui:=false rviz:=false
+/home/k/clb_ws_jazzy/run_jazzy.sh gui:=false rviz:=false
+```
+
+RTAB-Map is available in the full-scene entry, but the convenience script keeps
+it off by default while validating static-map Nav2. To enable the RGBD
+SLAM/debug mapping sidecar:
+
+```bash
+/home/k/clb_ws_jazzy/run_jazzy.sh rtabmap:=true
 ```
 
 Command-line goals for the full scene:
@@ -110,10 +140,7 @@ The first full-scene pass migrates static models only. Classic plugin examples,
 dynamic actors, and mechanism demo models remain excluded until the Harmonic
 equivalents are implemented.
 
-## Full Area Multi-Sensor Fusion
-
-The ROS1-style fusion entry keeps the full static scene but replaces the
-smoke-test odometry with a wheel-odometry plus IMU EKF chain:
+The localization chain is:
 
 ```text
 /joint_states -> /wheel/odom
@@ -121,12 +148,30 @@ smoke-test odometry with a wheel-odometry plus IMU EKF chain:
 /scan         -> AMCL -> map->odom
 ```
 
-Run it with:
+The ROS1-style RGBD chain is also restored:
 
-```bash
-ros2 launch zebrat nav2_area_full_fusion.launch.py rviz:=true
+```text
+Gazebo RGB/depth camera -> /front_camera/rgb/image_raw
+Gazebo RGB/depth camera -> /front_camera/depth/image_raw
+Gazebo depth camera     -> /front_camera/depth/image_viz
+/front_camera/depth/image_raw + camera_info -> /front_camera/depth/points
+/odom + RGB + depth + /scan -> /rtabmap/info, /rtabmap/mapGraph, /rtabmap/mapData
 ```
 
-This entry disables the temporary static `map->odom` transform and disables the
-Ackermann controller's command-integrated `/odom`, so Nav2 consumes the fused
-localization chain instead.
+The local Nav2 costmap consumes both `/scan` and
+`/front_camera/depth/points`, so the current full-scene entry is a static-map
+Nav2 baseline with multi-sensor local obstacle input. It is not yet the final
+no-map online SLAM navigation entry; that next entry should disable AMCL and
+`map_server`, let RTAB-Map publish `/map` and `map->odom`, and let Nav2 consume
+the live RTAB-Map occupancy map.
+
+The front lidar is mounted at the front top of the robot in the Jazzy URDF
+(`x=0.62`, `z=0.55`) with a `0.18m` minimum range, which keeps the local
+costmap from marking the robot body as an obstacle at startup.
+
+The RViz config intentionally mirrors the old ROS1 navigation and RTAB-Map
+debug views: map, robot model, TF, laser scan, `/front_camera` image displays,
+global/local costmaps, global/local plans, AMCL particles, fused/wheel odometry,
+and RTAB-Map info/graph/cloud displays. The RTAB-Map database defaults to
+`~/.ros/rtabmap/area_full_jazzy.db`; pass `rtabmap_delete_db_on_start:=true`
+when you want a fresh mapping database.

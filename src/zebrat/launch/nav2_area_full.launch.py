@@ -15,6 +15,10 @@ def generate_launch_description():
     rviz = LaunchConfiguration("rviz")
     nav2_start_delay = LaunchConfiguration("nav2_start_delay")
     controller_start_delay = LaunchConfiguration("controller_start_delay")
+    rtabmap = LaunchConfiguration("rtabmap")
+    rtabmap_start_delay = LaunchConfiguration("rtabmap_start_delay")
+    rtabmap_database_path = LaunchConfiguration("rtabmap_database_path")
+    rtabmap_delete_db_on_start = LaunchConfiguration("rtabmap_delete_db_on_start")
 
     return LaunchDescription(
         [
@@ -22,24 +26,43 @@ def generate_launch_description():
             DeclareLaunchArgument("rviz", default_value="true", description="Start RViz"),
             DeclareLaunchArgument(
                 "nav2_start_delay",
-                default_value="55.0",
+                default_value="0.0",
                 description="Seconds to wait before starting Nav2 nodes",
             ),
             DeclareLaunchArgument(
                 "controller_start_delay",
-                default_value="30.0",
+                default_value="0.0",
                 description="Seconds to wait before spawning ros2_control controllers",
             ),
+            DeclareLaunchArgument("rtabmap", default_value="false", description="Start RGBD RTAB-Map"),
+            DeclareLaunchArgument(
+                "rtabmap_start_delay",
+                default_value="0.0",
+                description="Seconds to wait before starting RGBD RTAB-Map",
+            ),
+            DeclareLaunchArgument(
+                "rtabmap_database_path",
+                default_value="~/.ros/rtabmap/area_full_jazzy.db",
+                description="RTAB-Map database path",
+            ),
+            DeclareLaunchArgument(
+                "rtabmap_delete_db_on_start",
+                default_value="false",
+                description="Delete RTAB-Map database at startup",
+            ),
             IncludeLaunchDescription(
-                PythonLaunchDescriptionSource(os.path.join(pkg_share, "launch", "nav2_area.launch.py")),
+                PythonLaunchDescriptionSource(
+                    os.path.join(pkg_share, "launch", "nav2_area_full_fusion.launch.py")
+                ),
                 launch_arguments={
-                    "world": "area_full",
                     "gui": gui,
                     "rviz": rviz,
-                    "map": os.path.join(pkg_share, "maps", "area_full_jazzy.yaml"),
-                    "params_file": os.path.join(pkg_share, "config", "nav2_area_full.yaml"),
                     "nav2_start_delay": nav2_start_delay,
                     "controller_start_delay": controller_start_delay,
+                    "rtabmap": rtabmap,
+                    "rtabmap_start_delay": rtabmap_start_delay,
+                    "rtabmap_database_path": rtabmap_database_path,
+                    "rtabmap_delete_db_on_start": rtabmap_delete_db_on_start,
                 }.items(),
             ),
         ]
